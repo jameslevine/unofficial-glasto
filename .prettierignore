@@ -7,3 +7,5 @@ coverage
 web-build
 .aws-sam
 *.tsbuildinfo
+scraper/seed
+scraper/tests/fixtures

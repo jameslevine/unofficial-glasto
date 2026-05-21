@@ -36,13 +36,14 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 - [x] CI pipeline (`ci.yml`)
 - [x] Quality gates verified (lint, typecheck, format, tests all passing)
 
-### Phase 1 — Data Pipeline + API 🔴 Not Started
+### Phase 1 — Data Pipeline + API 🟡 In Progress
 
-- [ ] DynamoDB single-table CloudFormation
-- [ ] Express + Lambda backend with `/lineup/:year`, `/stages`
-- [ ] TypeScript scraper for `glastonburyfestivals.co.uk`
-- [ ] Seed data committed for 2022–2025
+- [x] DynamoDB single-table CloudFormation
+- [x] Express + Lambda backend with `/lineup/:year`, `/stages`
+- [x] TypeScript scraper for `glastonburyfestivals.co.uk`
+- [x] Seed data committed for 2022–2025
 - [ ] Spotify Client Credentials integration at ingest
+- [ ] Deploy to dev env and smoke-test `/v1/lineup/2024`
 
 ### Phase 2 — Web MVP 🔴 Not Started
 

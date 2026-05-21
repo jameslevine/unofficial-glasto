@@ -2,9 +2,9 @@
 
 ## 🔵 Current Task
 
-- **Task:** Phase 1 — Data pipeline + API (next)
-- **Started:** _pending_
-- **Context:** Phase 0 complete: monorepo, tooling, scaffolding, and quality gates verified. Phase 1 begins by tuning the scraper selectors against captured HTML and seeding the API with 2022–2025 data.
+- **Task:** Phase 1 — Data pipeline + API
+- **Started:** 2026-05-21
+- **Context:** Scraper now extracts performances from the real `glastonburyfestivals.co.uk` HTML. Seed JSON committed for 2022–2025 (≈14,700 performances total). Next: wire Spotify resolution at ingest, finalise CFN templates, deploy `/lineup/:year` and `/stages`.
 
 ## ✅ Completed Tasks
 
@@ -14,6 +14,9 @@
 | 2026-05-21 | Created `docs/` (ROADMAP, ARCHITECTURE, API_SCHEMA, TOOLS_AND_TECH, TASK_LOG, DECISIONS) | Documentation-first                                           |
 | 2026-05-21 | Bootstrapped monorepo + tooling + scaffolds + first commit                               | Hooks bypassed on first commit because deps not yet installed |
 | 2026-05-21 | Installed deps; ran prettier/eslint/tsc/vitest — all green (5 tests pass)                | Phase 0 fully verified                                        |
+| 2026-05-21 | Captured 2022–2025 lineup HTML fixtures from glastonburyfestivals.co.uk                  | ~600KB–730KB per year                                         |
+| 2026-05-21 | Rewrote `scraper/src/parse.ts` against real markup; fixture test passes                  | 3,148–4,023 performances per year incl. non-music             |
+| 2026-05-21 | Generated `scraper/seed/{2022..2025}.json` via `scripts/build-seeds.ts`                  | Committed as offline-ready archive data                       |
 
 ## 🔴 Blocked / Pending
 
@@ -21,8 +24,8 @@ _None._
 
 ## ⏭️ Next Up
 
-1. `npm install` at repo root (workspaces) → run `npm run lint`, `typecheck`, `test`, `format:check` and fix anything that surfaces
-2. Phase 1 work: tune `scraper/src/parse.ts` selectors against captured HTML fixtures, populate `scraper/seed/{2022..2025}.json`
+1. Add a one-shot loader that batch-writes `seed/{year}.json` into DynamoDB on first deploy
+2. Wire Spotify Client Credentials resolution into the scraper (search artist by title; cache `spotifyId` on Artist record)
 3. Add `infrastructure/cognito.yaml` and `infrastructure/s3-cloudfront.yaml`
-4. Scaffold `apps/web` (Vite + React + Tailwind)
-5. Scaffold `apps/mobile` (Expo + Expo Router)
+4. Deploy backend (`api.yaml`, `dynamodb.yaml`, `scraper.yaml`) to dev environment and smoke-test `/v1/lineup/2024`
+5. Scaffold `apps/web` (Vite + React + Tailwind) — Phase 2
