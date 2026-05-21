@@ -22,6 +22,7 @@
 | 2026-05-21 | Consolidated infra to single `main.yaml`; switched workspace deps to `file:` for SAM     | Nested templates removed; `sam build` resolves cleanly        |
 | 2026-05-21 | Deployed `glasto-dev` to AWS us-east-1; loaded 121 stages + 14,773 performances          | API live at `0pmdeq1cnb.execute-api.us-east-1.amazonaws.com`  |
 | 2026-05-21 | Added DDB pagination to lineup + stages adapters; deduped parser IDs                     | Smoke test returns full counts                                |
+| 2026-05-21 | Scaffolded `apps/web` (Vite + React + TS + Tailwind, TanStack Query + IndexedDB)         | Lineup browse, search, filters, local favourites all working  |
 
 ## 🔴 Blocked / Pending
 
@@ -29,6 +30,6 @@ _None._
 
 ## ⏭️ Next Up
 
-1. Scaffold `apps/web` (Vite + React + Tailwind) — Phase 2
-2. Wire TanStack Query + IndexedDB persister against the deployed API
+1. Add Vite PWA plugin for full offline app shell + map tile cache (Phase 2 finish)
+2. Deploy web to S3 + CloudFront (`infrastructure/s3-cloudfront.yaml`)
 3. `apps/mobile` Expo scaffold — Phase 3

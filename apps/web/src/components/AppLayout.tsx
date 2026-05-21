@@ -1,0 +1,56 @@
+import { NavLink, Outlet } from 'react-router-dom';
+
+const YEARS = [2025, 2024, 2023, 2022] as const;
+
+export const AppLayout = () => (
+  <div className="min-h-full">
+    <header className="sticky top-0 z-10 border-b border-border bg-bg/90 backdrop-blur">
+      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-4 py-3">
+        <NavLink to="/" className="flex items-center gap-2">
+          <span aria-hidden className="text-2xl">
+            ⛺
+          </span>
+          <span className="font-display text-lg font-semibold tracking-tight">
+            Unofficial Glasto
+          </span>
+        </NavLink>
+
+        <nav aria-label="Year" className="flex flex-wrap items-center gap-1.5">
+          {YEARS.map((y) => (
+            <NavLink
+              key={y}
+              to={`/lineup/${y}`}
+              end
+              className={({ isActive }) => `chip ${isActive ? 'chip-active' : ''}`}
+            >
+              {y}
+            </NavLink>
+          ))}
+          <NavLink
+            to="/favourites"
+            className={({ isActive }) => `chip ${isActive ? 'chip-active' : ''}`}
+          >
+            ★ Favourites
+          </NavLink>
+        </nav>
+      </div>
+    </header>
+
+    <main className="mx-auto max-w-5xl px-4 py-6">
+      <Outlet />
+    </main>
+
+    <footer className="mx-auto max-w-5xl px-4 py-8 text-xs text-muted">
+      Unofficial — fan-made. Lineup data from{' '}
+      <a
+        href="https://www.glastonburyfestivals.co.uk/"
+        target="_blank"
+        rel="noreferrer"
+        className="underline hover:text-fg"
+      >
+        glastonburyfestivals.co.uk
+      </a>
+      . Not affiliated with Glastonbury Festival.
+    </footer>
+  </div>
+);

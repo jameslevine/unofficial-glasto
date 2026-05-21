@@ -9,3 +9,5 @@ web-build
 *.tsbuildinfo
 scraper/seed
 scraper/tests/fixtures
+.playwright-mcp
+*.png

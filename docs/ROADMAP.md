@@ -46,12 +46,13 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 - [x] DDB seed loader (`scripts/load-seeds.ts`) for first deploy
 - [x] Deployed to dev env; smoke-tested `/v1/lineup/{2022..2025}` (3148/3667/3935/4023) and `/v1/stages` (121)
 
-### Phase 2 — Web MVP 🔴 Not Started
+### Phase 2 — Web MVP 🟡 In Progress
 
-- [ ] Vite + React app shell
-- [ ] Lineup browse, search, day/stage filters
-- [ ] Local favourites
-- [ ] Service Worker + offline cache via Vite PWA plugin
+- [x] Vite + React app shell with Tailwind design tokens
+- [x] Lineup browse, search, day/area filters
+- [x] Local favourites (Zustand + localStorage)
+- [x] TanStack Query + IndexedDB cache persister (offline-on-revisit)
+- [ ] Service Worker + offline cache via Vite PWA plugin (full offline shell)
 - [ ] Deployed to S3 + CloudFront
 
 ### Phase 3 — Mobile MVP 🔴 Not Started
