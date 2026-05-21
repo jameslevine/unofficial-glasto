@@ -27,14 +27,17 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 
 ## Phased Milestones
 
-### Phase 0 — Foundation 🟡 In Progress
+### Phase 0 — Foundation 🟢 Complete
+
 - [x] `docs/` folder populated
-- [ ] Monorepo (`apps/`, `packages/`, `backend/`, `scraper/`, `infrastructure/`)
-- [ ] ESLint + Prettier + TypeScript + Husky + commitlint
-- [ ] Git initialised with first commit
-- [ ] CI pipeline (`ci.yml`)
+- [x] Monorepo (`packages/`, `backend/`, `scraper/`, `infrastructure/`) — `apps/web` + `apps/mobile` deferred to phases 2/3
+- [x] ESLint + Prettier + TypeScript + Husky + commitlint
+- [x] Git initialised with first commit
+- [x] CI pipeline (`ci.yml`)
+- [x] Quality gates verified (lint, typecheck, format, tests all passing)
 
 ### Phase 1 — Data Pipeline + API 🔴 Not Started
+
 - [ ] DynamoDB single-table CloudFormation
 - [ ] Express + Lambda backend with `/lineup/:year`, `/stages`
 - [ ] TypeScript scraper for `glastonburyfestivals.co.uk`
@@ -42,6 +45,7 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 - [ ] Spotify Client Credentials integration at ingest
 
 ### Phase 2 — Web MVP 🔴 Not Started
+
 - [ ] Vite + React app shell
 - [ ] Lineup browse, search, day/stage filters
 - [ ] Local favourites
@@ -49,29 +53,34 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 - [ ] Deployed to S3 + CloudFront
 
 ### Phase 3 — Mobile MVP 🔴 Not Started
+
 - [ ] Expo app shell with Expo Router
 - [ ] Reuse `packages/shared` query hooks
 - [ ] SQLite-persisted query cache
 - [ ] EAS preview build
 
 ### Phase 4 — Spotify + Artist Pages 🔴 Not Started
+
 - [ ] `/artists/:slug` and `/artists/:slug/spotify` endpoints
 - [ ] Artist detail screen with embed + deep-link
 - [ ] Offline fallback (cached metadata + deep-link)
 
 ### Phase 5 — Map + Walking Times 🔴 Not Started
+
 - [ ] Mapbox custom style
 - [ ] Stage pins on web + mobile
 - [ ] Walking time estimates between favourites
 - [ ] Web Service Worker tile cache + mobile offline pack
 
 ### Phase 6 — Cognito + Sync 🔴 Not Started
+
 - [ ] Cognito user pool
 - [ ] `/me/favourites` endpoints
 - [ ] Local-first sync with last-write-wins
 - [ ] Cross-device favourites verified
 
 ### Phase 7 — Polish + 2026 Readiness 🔴 Not Started
+
 - [ ] WCAG 2.1 AA pass
 - [ ] Performance budgets (LCP < 2s, INP < 200ms)
 - [ ] i18n scaffolding (en, future-ready for more languages)

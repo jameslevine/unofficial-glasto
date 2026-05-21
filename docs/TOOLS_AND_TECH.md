@@ -74,12 +74,12 @@
 
 ## External Services
 
-| Service | Purpose | Auth |
-|---|---|---|
-| Spotify Web API | Artist metadata, top tracks | Client Credentials (server-side only) |
-| Mapbox | Map tiles, custom styles | Public restricted token (web), download token (mobile) |
-| Amazon Cognito | Optional user accounts | OAuth2 / JWT |
-| AWS DynamoDB | Single-table data store | IAM role |
+| Service         | Purpose                     | Auth                                                   |
+| --------------- | --------------------------- | ------------------------------------------------------ |
+| Spotify Web API | Artist metadata, top tracks | Client Credentials (server-side only)                  |
+| Mapbox          | Map tiles, custom styles    | Public restricted token (web), download token (mobile) |
+| Amazon Cognito  | Optional user accounts      | OAuth2 / JWT                                           |
+| AWS DynamoDB    | Single-table data store     | IAM role                                               |
 
 ## Environment Setup
 

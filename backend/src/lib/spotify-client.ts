@@ -85,10 +85,9 @@ export const searchArtist = async (name: string): Promise<SpotifyArtistMatch | n
 
 export const getTopTracks = async (artistId: string): Promise<SpotifyTrack[]> => {
   const token = await getToken();
-  const res = await fetch(
-    `https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=GB`,
-    { headers: { Authorization: `Bearer ${token}` } },
-  );
+  const res = await fetch(`https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=GB`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
   if (!res.ok) throw new Error(`Spotify top-tracks failed: ${res.status}`);
 
   const json = (await res.json()) as {

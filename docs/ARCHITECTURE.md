@@ -40,15 +40,15 @@ flowchart TB
 
 ## Component Breakdown
 
-| Component | Responsibility |
-|---|---|
-| `apps/web` | Vite + React + Tailwind PWA. Browses lineup, manages favourites, shows map. |
-| `apps/mobile` | Expo + React Native app. Same flows as web with native map + offline packs. |
+| Component         | Responsibility                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------ |
+| `apps/web`        | Vite + React + Tailwind PWA. Browses lineup, manages favourites, shows map.                |
+| `apps/mobile`     | Expo + React Native app. Same flows as web with native map + offline packs.                |
 | `packages/shared` | TypeScript types, Zod schemas, typed API client, TanStack Query hooks reused by both apps. |
-| `packages/ui` | Cross-platform headless primitives (where worth sharing). |
-| `backend/` | Express monolith deployed as Lambda. Routes: `/lineup`, `/artists`, `/stages`, `/me/*`. |
-| `scraper/` | Scheduled Lambda that scrapes the official site and writes to DynamoDB. |
-| `infrastructure/` | Nested CloudFormation stacks (DynamoDB, API, scraper, Cognito, S3+CF, monitoring). |
+| `packages/ui`     | Cross-platform headless primitives (where worth sharing).                                  |
+| `backend/`        | Express monolith deployed as Lambda. Routes: `/lineup`, `/artists`, `/stages`, `/me/*`.    |
+| `scraper/`        | Scheduled Lambda that scrapes the official site and writes to DynamoDB.                    |
+| `infrastructure/` | Nested CloudFormation stacks (DynamoDB, API, scraper, Cognito, S3+CF, monitoring).         |
 
 ## Data Flow
 
@@ -93,14 +93,14 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md).
 
 ## External Dependencies
 
-| Dependency | Used by | Notes |
-|---|---|---|
-| Spotify Web API | backend, scraper | Client Credentials flow; rate-limited; cached aggressively. |
-| Mapbox | both apps | Custom style; offline cache via Service Worker (web) + offline pack (mobile). |
-| `glastonburyfestivals.co.uk` | scraper | HTML scrape; structure changes annually — re-validate on new lineup release. |
+| Dependency                   | Used by          | Notes                                                                         |
+| ---------------------------- | ---------------- | ----------------------------------------------------------------------------- |
+| Spotify Web API              | backend, scraper | Client Credentials flow; rate-limited; cached aggressively.                   |
+| Mapbox                       | both apps        | Custom style; offline cache via Service Worker (web) + offline pack (mobile). |
+| `glastonburyfestivals.co.uk` | scraper          | HTML scrape; structure changes annually — re-validate on new lineup release.  |
 
 ## Recent Significant Changes
 
-| Date | Change |
-|---|---|
+| Date       | Change                                  |
+| ---------- | --------------------------------------- |
 | 2026-05-21 | Project bootstrap, Phase 0 in progress. |

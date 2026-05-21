@@ -13,6 +13,7 @@ export default [
       '**/web-build/**',
       '**/.aws-sam/**',
       '**/*.tsbuildinfo',
+      '**/*.cjs',
     ],
   },
   js.configs.recommended,

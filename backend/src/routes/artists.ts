@@ -8,7 +8,7 @@ import { slugParamsSchema } from '../models/lineup.js';
 
 export const artistsRouter = Router();
 
-artistsRouter.get(
+artistsRouter.get<'/:slug', { slug: string }>(
   '/:slug',
   validateParams(slugParamsSchema),
   asyncHandler(async (req, res) => {
@@ -18,7 +18,7 @@ artistsRouter.get(
   }),
 );
 
-artistsRouter.get(
+artistsRouter.get<'/:slug/spotify', { slug: string }>(
   '/:slug/spotify',
   validateParams(slugParamsSchema),
   asyncHandler(async (req, res) => {

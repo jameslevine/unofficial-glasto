@@ -1,9 +1,5 @@
 import { Router } from 'express';
-import {
-  deleteFavourite,
-  listFavourites,
-  putFavourite,
-} from '../adapters/dynamodb-favourites.js';
+import { deleteFavourite, listFavourites, putFavourite } from '../adapters/dynamodb-favourites.js';
 import { AppError, asyncHandler } from '../lib/errors.js';
 import { HTTP_STATUS } from '../constants/index.js';
 import { cognitoAuth } from '../middleware/cognito-auth.js';
@@ -38,7 +34,7 @@ favouritesRouter.post(
   }),
 );
 
-favouritesRouter.delete(
+favouritesRouter.delete<'/:perfId', { perfId: string }>(
   '/:perfId',
   validateParams(perfIdParamsSchema),
   asyncHandler(async (req, res) => {
