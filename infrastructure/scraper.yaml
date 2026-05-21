@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Unofficial Glasto — scheduled lineup scraper Lambda.
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues: [dev, prod]
+  TableName:
+    Type: String
+  ScheduleExpression:
+    Type: String
+    Default: 'rate(24 hours)'
+
+Resources:
+  ScraperFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub glasto-scraper-${Environment}
+      CodeUri: ../scraper/dist
+      Handler: handler.handler
+      Runtime: nodejs22.x
+      Timeout: 120
+      MemorySize: 512
+      Architectures: [arm64]
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableName
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref TableName
+      Events:
+        Scheduled:
+          Type: Schedule
+          Properties:
+            Schedule: !Ref ScheduleExpression
+            Description: Re-scrape lineup
+            Enabled: true
+
+Outputs:
+  ScraperFunctionArn:
+    Value: !GetAtt ScraperFunction.Arn

@@ -1,0 +1,23 @@
+{
+  "name": "@glasto/scraper",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/handler.js",
+  "scripts": {
+    "build": "tsc -b",
+    "scrape:local": "tsx src/cli.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.600.0",
+    "@aws-sdk/lib-dynamodb": "^3.600.0",
+    "@glasto/shared": "*",
+    "cheerio": "^1.0.0",
+    "dayjs": "^1.11.0",
+    "undici": "^6.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0"
+  }
+}

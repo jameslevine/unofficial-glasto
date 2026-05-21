@@ -1,0 +1,30 @@
+{
+  "name": "@glasto/backend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc -b",
+    "dev": "tsx watch src/local.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.600.0",
+    "@aws-sdk/lib-dynamodb": "^3.600.0",
+    "@glasto/shared": "*",
+    "aws-jwt-verify": "^4.0.1",
+    "cors": "^2.8.5",
+    "dayjs": "^1.11.0",
+    "express": "^4.21.0",
+    "joi": "^17.13.0",
+    "serverless-http": "^3.2.0",
+    "uuid": "^10.0.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/uuid": "^10.0.0",
+    "tsx": "^4.19.0"
+  }
+}

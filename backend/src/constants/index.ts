@@ -1,0 +1,19 @@
+export const API_VERSION = 'v1';
+
+export const HTTP_STATUS = {
+  OK: 200,
+  CREATED: 201,
+  NO_CONTENT: 204,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  NOT_FOUND: 404,
+  TOO_MANY_REQUESTS: 429,
+  INTERNAL: 500,
+} as const;
+
+export const SPOTIFY_CACHE_TTL_SECONDS = 60 * 60;
+export const LINEUP_CACHE_TTL_SECONDS = 60 * 5;
+
+export const TABLE_NAME_ENV = 'TABLE_NAME';
+export const COGNITO_USER_POOL_ID_ENV = 'COGNITO_USER_POOL_ID';
+export const COGNITO_CLIENT_ID_ENV = 'COGNITO_CLIENT_ID';

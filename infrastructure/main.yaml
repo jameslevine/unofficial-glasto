@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Unofficial Glasto — root nested stack.
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues: [dev, prod]
+    Default: dev
+  TemplateBucket:
+    Type: String
+    Description: S3 bucket where nested templates are uploaded by `sam package`.
+
+Resources:
+  DynamoDBStack:
+    Type: AWS::CloudFormation::Stack
+    Properties:
+      TemplateURL: !Sub https://${TemplateBucket}.s3.amazonaws.com/dynamodb.yaml
+      Parameters:
+        Environment: !Ref Environment
+
+  ApiStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: DynamoDBStack
+    Properties:
+      TemplateURL: !Sub https://${TemplateBucket}.s3.amazonaws.com/api.yaml
+      Parameters:
+        Environment: !Ref Environment
+        TableName: !GetAtt DynamoDBStack.Outputs.TableName
+
+  ScraperStack:
+    Type: AWS::CloudFormation::Stack
+    DependsOn: DynamoDBStack
+    Properties:
+      TemplateURL: !Sub https://${TemplateBucket}.s3.amazonaws.com/scraper.yaml
+      Parameters:
+        Environment: !Ref Environment
+        TableName: !GetAtt DynamoDBStack.Outputs.TableName
+
+Outputs:
+  ApiEndpoint:
+    Value: !GetAtt ApiStack.Outputs.ApiEndpoint
+  TableName:
+    Value: !GetAtt DynamoDBStack.Outputs.TableName
