@@ -11,3 +11,4 @@ scraper/seed
 scraper/tests/fixtures
 .playwright-mcp
 *.png
+apps/mobile/expo-env.d.ts

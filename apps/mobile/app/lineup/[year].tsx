@@ -1,6 +1,14 @@
 import { useLocalSearchParams, Stack } from 'expo-router';
-import { useMemo, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { useCallback, useMemo, useState } from 'react';
+import {
+  ActivityIndicator,
+  ScrollView,
+  SectionList,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import type { DayOfFestival, Performance } from '@glasto/shared';
 import { useLineup } from '@glasto/shared';
 import { Chip } from '../../src/components/Chip';
@@ -10,6 +18,11 @@ import { DAY_ORDER, formatDay, groupByDay } from '../../src/lib/format';
 import { colors, radii, spacing } from '../../src/lib/theme';
 
 const VALID_YEARS = new Set([2022, 2023, 2024, 2025]);
+
+interface DaySection {
+  title: DayOfFestival;
+  data: Performance[];
+}
 
 export default function LineupScreen() {
   const { year } = useLocalSearchParams<{ year: string }>();
@@ -29,10 +42,10 @@ export default function LineupScreen() {
     return Array.from(set).sort();
   }, [data]);
 
-  const filtered = useMemo<Performance[]>(() => {
+  const sections = useMemo<DaySection[]>(() => {
     if (!data) return [];
     const q = search.trim().toLowerCase();
-    return data.filter((p) => {
+    const filtered = data.filter((p) => {
       if (day !== 'ALL' && p.day !== day) return false;
       if (area !== 'ALL' && p.area !== area) return false;
       if (q && !p.title.toLowerCase().includes(q) && !p.stage.toLowerCase().includes(q)) {
@@ -40,9 +53,22 @@ export default function LineupScreen() {
       }
       return true;
     });
+    return groupByDay(filtered).map(([title, items]) => ({ title, data: items }));
   }, [data, search, day, area]);
 
-  const grouped = useMemo(() => groupByDay(filtered), [filtered]);
+  const renderItem = useCallback(
+    ({ item }: { item: Performance }) => <PerformanceCard performance={item} />,
+    [],
+  );
+  const renderSectionHeader = useCallback(
+    ({ section }: { section: DaySection }) => (
+      <View style={styles.sectionHeaderWrap}>
+        <Text style={styles.dayHeading}>{formatDay(section.title)}</Text>
+      </View>
+    ),
+    [],
+  );
+  const keyExtractor = useCallback((p: Performance) => p.id, []);
 
   if (!valid) {
     return (
@@ -52,73 +78,81 @@ export default function LineupScreen() {
     );
   }
 
+  const header = (
+    <View style={styles.controls}>
+      <TextInput
+        value={search}
+        onChangeText={setSearch}
+        placeholder="Search artists or stages"
+        placeholderTextColor={colors.muted}
+        style={styles.input}
+        autoCapitalize="none"
+        autoCorrect={false}
+        returnKeyType="search"
+        clearButtonMode="while-editing"
+      />
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.row}
+      >
+        <Chip label="All days" active={day === 'ALL'} onPress={() => setDay('ALL')} />
+        {DAY_ORDER.map((d) => (
+          <Chip key={d} label={formatDay(d)} active={day === d} onPress={() => setDay(d)} />
+        ))}
+      </ScrollView>
+      {areas.length > 0 && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.row}
+        >
+          <Chip label="All areas" active={area === 'ALL'} onPress={() => setArea('ALL')} />
+          {areas.map((a) => (
+            <Chip key={a} label={a} active={area === a} onPress={() => setArea(a)} />
+          ))}
+        </ScrollView>
+      )}
+    </View>
+  );
+
+  const empty = (
+    <>
+      {isLoading && (
+        <View style={styles.center}>
+          <ActivityIndicator color={colors.brand} />
+        </View>
+      )}
+      {error && (
+        <View style={styles.center}>
+          <Text style={styles.errorText}>Couldn&rsquo;t load the lineup.</Text>
+        </View>
+      )}
+      {!isLoading && !error && (
+        <View style={styles.center}>
+          <Text style={styles.muted}>No performances match your filters.</Text>
+        </View>
+      )}
+    </>
+  );
+
   return (
     <>
       <Stack.Screen options={{ title: `Glastonbury ${yearNum}` }} />
-      <ScrollView contentContainerStyle={styles.scroll} stickyHeaderIndices={[0]}>
-        <View style={styles.controls}>
-          <TextInput
-            value={search}
-            onChangeText={setSearch}
-            placeholder="Search artists or stages"
-            placeholderTextColor={colors.muted}
-            style={styles.input}
-            autoCapitalize="none"
-            autoCorrect={false}
-            returnKeyType="search"
-            clearButtonMode="while-editing"
-          />
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.row}
-          >
-            <Chip label="All days" active={day === 'ALL'} onPress={() => setDay('ALL')} />
-            {DAY_ORDER.map((d) => (
-              <Chip key={d} label={formatDay(d)} active={day === d} onPress={() => setDay(d)} />
-            ))}
-          </ScrollView>
-          {areas.length > 0 && (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.row}
-            >
-              <Chip label="All areas" active={area === 'ALL'} onPress={() => setArea('ALL')} />
-              {areas.map((a) => (
-                <Chip key={a} label={a} active={area === a} onPress={() => setArea(a)} />
-              ))}
-            </ScrollView>
-          )}
-        </View>
-
-        {isLoading && (
-          <View style={styles.center}>
-            <ActivityIndicator color={colors.brand} />
-          </View>
-        )}
-        {error && (
-          <View style={styles.center}>
-            <Text style={styles.errorText}>Couldn&rsquo;t load the lineup.</Text>
-          </View>
-        )}
-        {!isLoading && !error && filtered.length === 0 && (
-          <View style={styles.center}>
-            <Text style={styles.muted}>No performances match your filters.</Text>
-          </View>
-        )}
-
-        {grouped.map(([d, items]) => (
-          <View key={d} style={styles.daySection}>
-            <Text style={styles.dayHeading}>{formatDay(d)}</Text>
-            <View style={styles.dayCard}>
-              {items.map((p) => (
-                <PerformanceCard key={p.id} performance={p} />
-              ))}
-            </View>
-          </View>
-        ))}
-      </ScrollView>
+      <SectionList
+        sections={sections}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        renderSectionHeader={renderSectionHeader}
+        ListHeaderComponent={header}
+        ListEmptyComponent={empty}
+        stickySectionHeadersEnabled
+        initialNumToRender={20}
+        maxToRenderPerBatch={20}
+        windowSize={9}
+        removeClippedSubviews
+        contentContainerStyle={styles.scroll}
+      />
     </>
   );
 }
@@ -144,15 +178,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   row: { gap: spacing.sm, paddingRight: spacing.lg },
-  daySection: { marginTop: spacing.lg, paddingHorizontal: spacing.lg, gap: spacing.sm },
-  dayHeading: { color: colors.fg, fontSize: 18, fontWeight: '600' },
-  dayCard: {
-    backgroundColor: colors.surface,
-    borderRadius: radii.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    overflow: 'hidden',
+  sectionHeaderWrap: {
+    backgroundColor: colors.bg,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.sm,
   },
+  dayHeading: { color: colors.fg, fontSize: 18, fontWeight: '600' },
   center: { padding: spacing.xl, alignItems: 'center' },
   errorText: { color: colors.accent, fontSize: 14 },
   muted: { color: colors.muted, fontSize: 14 },

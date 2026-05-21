@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import type { Performance } from '@glasto/shared';
 import { colors, radii, spacing } from '../lib/theme';
@@ -8,7 +9,7 @@ interface Props {
   performance: Performance;
 }
 
-export const PerformanceCard = ({ performance }: Props) => {
+const PerformanceCardInner = ({ performance }: Props) => {
   const isFav = useFavourites((s) => Boolean(s.ids[performance.id]));
   const toggle = useFavourites((s) => s.toggle);
 
@@ -41,6 +42,11 @@ export const PerformanceCard = ({ performance }: Props) => {
     </View>
   );
 };
+
+export const PerformanceCard = memo(
+  PerformanceCardInner,
+  (prev, next) => prev.performance.id === next.performance.id,
+);
 
 const styles = StyleSheet.create({
   row: {
