@@ -2,9 +2,9 @@
 
 ## 🔵 Current Task
 
-- **Task:** Phase 2 — Web MVP scaffold (Vite + React + Tailwind)
-- **Started:** 2026-05-21
-- **Context:** Phase 1 is live in dev. API at `https://0pmdeq1cnb.execute-api.us-east-1.amazonaws.com/Prod` returns full paginated counts (3148/3667/3935/4023 + 121 stages). Ready to start the web app.
+- **Task:** Phase 3 — Mobile MVP (Expo app shell)
+- **Started:** _not yet_
+- **Context:** Phase 2 web MVP is live at <https://d5zgsiw27b3ju.cloudfront.net> with PWA offline support. Ready to scaffold `apps/mobile`.
 
 ## ✅ Completed Tasks
 
@@ -23,6 +23,9 @@
 | 2026-05-21 | Deployed `glasto-dev` to AWS us-east-1; loaded 121 stages + 14,773 performances          | API live at `0pmdeq1cnb.execute-api.us-east-1.amazonaws.com`  |
 | 2026-05-21 | Added DDB pagination to lineup + stages adapters; deduped parser IDs                     | Smoke test returns full counts                                |
 | 2026-05-21 | Scaffolded `apps/web` (Vite + React + TS + Tailwind, TanStack Query + IndexedDB)         | Lineup browse, search, filters, local favourites all working  |
+| 2026-05-21 | Added Vite PWA plugin (workbox runtime caching for lineup/stages/artists)                | SW registers in prod; navigateFallback for SPA routes         |
+| 2026-05-21 | Added S3+CloudFront web hosting to `main.yaml` (OAC, sigv4, logging, SPA fallback)       | Single consolidated stack; logs bucket with 30-day lifecycle  |
+| 2026-05-21 | Deployed web to <https://d5zgsiw27b3ju.cloudfront.net>                                   | Smoke-tested deep links + manifest + sw.js — all 200          |
 
 ## 🔴 Blocked / Pending
 
@@ -30,6 +33,6 @@ _None._
 
 ## ⏭️ Next Up
 
-1. Add Vite PWA plugin for full offline app shell + map tile cache (Phase 2 finish)
-2. Deploy web to S3 + CloudFront (`infrastructure/s3-cloudfront.yaml`)
-3. `apps/mobile` Expo scaffold — Phase 3
+1. `apps/mobile` Expo scaffold — Phase 3
+2. Reuse `packages/shared` query hooks in mobile
+3. SQLite-persisted query cache + EAS preview build
