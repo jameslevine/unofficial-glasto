@@ -142,6 +142,7 @@ export const parseLineupHtml = ({ html, year }: ParseInput): Performance[] => {
   const $ = cheerio.load(html);
   const dates = parseFestivalDates($, year);
   const performances: Performance[] = [];
+  const seenIds = new Set<string>();
 
   let currentArea = 'OTHER';
 
@@ -189,9 +190,16 @@ export const parseLineupHtml = ({ html, year }: ParseInput): Performance[] => {
               const description =
                 $link.attr('title') ?? $nameCell.find('[title]').first().attr('title');
               const sourceUrl = $link.attr('href') ?? undefined;
-              const id =
+              const baseId =
                 `${year}-${stageSlug}-${slugify(title)}-${day.toLowerCase()}-` +
                 `${timing.startsAt.slice(11, 16).replace(':', '')}`;
+              let id = baseId;
+              let suffix = 2;
+              while (seenIds.has(id)) {
+                id = `${baseId}-${suffix}`;
+                suffix += 1;
+              }
+              seenIds.add(id);
               performances.push({
                 id,
                 year,

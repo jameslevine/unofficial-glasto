@@ -36,7 +36,7 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 - [x] CI pipeline (`ci.yml`)
 - [x] Quality gates verified (lint, typecheck, format, tests all passing)
 
-### Phase 1 — Data Pipeline + API 🟡 In Progress
+### Phase 1 — Data Pipeline + API 🟢 Complete
 
 - [x] DynamoDB single-table CloudFormation
 - [x] Express + Lambda backend with `/lineup/:year`, `/stages`
@@ -44,7 +44,7 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 - [x] Seed data committed for 2022–2025
 - [x] Spotify Client Credentials integration at ingest
 - [x] DDB seed loader (`scripts/load-seeds.ts`) for first deploy
-- [ ] Deploy to dev env and smoke-test `/v1/lineup/2024`
+- [x] Deployed to dev env; smoke-tested `/v1/lineup/{2022..2025}` (3148/3667/3935/4023) and `/v1/stages` (121)
 
 ### Phase 2 — Web MVP 🔴 Not Started
 

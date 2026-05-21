@@ -1,44 +1,142 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Unofficial Glasto — root nested stack.
+Description: Unofficial Glasto — API + DynamoDB + scheduled scraper.
 
 Parameters:
   Environment:
     Type: String
     AllowedValues: [dev, prod]
     Default: dev
-  TemplateBucket:
+  ScraperSchedule:
     Type: String
-    Description: S3 bucket where nested templates are uploaded by `sam package`.
+    Default: 'rate(24 hours)'
+  CognitoUserPoolId:
+    Type: String
+    Default: ''
+  CognitoClientId:
+    Type: String
+    Default: ''
+  SpotifyClientId:
+    Type: String
+    NoEcho: true
+    Default: ''
+  SpotifyClientSecret:
+    Type: String
+    NoEcho: true
+    Default: ''
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Architectures: [arm64]
+    MemorySize: 512
+    Environment:
+      Variables:
+        NODE_OPTIONS: --enable-source-maps
 
 Resources:
-  DynamoDBStack:
-    Type: AWS::CloudFormation::Stack
+  Table:
+    Type: AWS::DynamoDB::Table
     Properties:
-      TemplateURL: !Sub https://${TemplateBucket}.s3.amazonaws.com/dynamodb.yaml
-      Parameters:
-        Environment: !Ref Environment
+      TableName: !Sub glasto-${Environment}
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1PK
+          AttributeType: S
+        - AttributeName: GSI1SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: gsi1
+          KeySchema:
+            - AttributeName: GSI1PK
+              KeyType: HASH
+            - AttributeName: GSI1SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      SSESpecification:
+        SSEEnabled: true
 
-  ApiStack:
-    Type: AWS::CloudFormation::Stack
-    DependsOn: DynamoDBStack
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Format: cjs
+        Target: node22
+        Sourcemap: true
+        EntryPoints:
+          - src/index.ts
+        External:
+          - '@aws-sdk/*'
     Properties:
-      TemplateURL: !Sub https://${TemplateBucket}.s3.amazonaws.com/api.yaml
-      Parameters:
-        Environment: !Ref Environment
-        TableName: !GetAtt DynamoDBStack.Outputs.TableName
+      FunctionName: !Sub glasto-api-${Environment}
+      CodeUri: ../backend
+      Handler: index.handler
+      Timeout: 15
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
+          COGNITO_CLIENT_ID: !Ref CognitoClientId
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
 
-  ScraperStack:
-    Type: AWS::CloudFormation::Stack
-    DependsOn: DynamoDBStack
+  ScraperFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Format: cjs
+        Target: node22
+        Sourcemap: true
+        EntryPoints:
+          - src/handler.ts
+        External:
+          - '@aws-sdk/*'
     Properties:
-      TemplateURL: !Sub https://${TemplateBucket}.s3.amazonaws.com/scraper.yaml
-      Parameters:
-        Environment: !Ref Environment
-        TableName: !GetAtt DynamoDBStack.Outputs.TableName
+      FunctionName: !Sub glasto-scraper-${Environment}
+      CodeUri: ../scraper
+      Handler: handler.handler
+      Timeout: 300
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          SPOTIFY_CLIENT_ID: !Ref SpotifyClientId
+          SPOTIFY_CLIENT_SECRET: !Ref SpotifyClientSecret
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+      Events:
+        Scheduled:
+          Type: Schedule
+          Properties:
+            Schedule: !Ref ScraperSchedule
+            Description: Re-scrape Glastonbury lineup
+            Enabled: true
 
 Outputs:
   ApiEndpoint:
-    Value: !GetAtt ApiStack.Outputs.ApiEndpoint
+    Description: Base API URL
+    Value: !Sub https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod
   TableName:
-    Value: !GetAtt DynamoDBStack.Outputs.TableName
+    Description: Single-table DynamoDB name
+    Value: !Ref Table

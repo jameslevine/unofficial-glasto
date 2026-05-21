@@ -12,7 +12,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.600.0",
     "@aws-sdk/lib-dynamodb": "^3.600.0",
-    "@glasto/shared": "*",
+    "@glasto/shared": "file:../packages/shared",
     "cheerio": "^1.0.0",
     "dayjs": "^1.11.0",
     "undici": "^6.0.0"
