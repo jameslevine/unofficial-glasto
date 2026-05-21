@@ -1,0 +1,63 @@
+import { Link } from 'expo-router';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { colors, radii, spacing } from '../src/lib/theme';
+
+const YEARS = [2025, 2024, 2023, 2022] as const;
+
+export default function HomeScreen() {
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.heading}>Pick a year</Text>
+      <View style={styles.grid}>
+        {YEARS.map((y) => (
+          <Link key={y} href={`/lineup/${y}`} asChild>
+            <Pressable style={styles.tile}>
+              <Text style={styles.tileNumber}>{y}</Text>
+              <Text style={styles.tileLabel}>Glastonbury</Text>
+            </Pressable>
+          </Link>
+        ))}
+      </View>
+
+      <Link href="/favourites" asChild>
+        <Pressable style={styles.favBtn}>
+          <Text style={styles.favBtnLabel}>★ Favourites</Text>
+        </Pressable>
+      </Link>
+
+      <Text style={styles.footer}>
+        Unofficial — fan-made. Lineup data from glastonburyfestivals.co.uk. Not affiliated with
+        Glastonbury Festival.
+      </Text>
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { padding: spacing.lg, gap: spacing.lg },
+  heading: { color: colors.fg, fontSize: 22, fontWeight: '600' },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md },
+  tile: {
+    flexBasis: '47%',
+    flexGrow: 1,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderWidth: 1,
+    borderRadius: radii.lg,
+    padding: spacing.lg,
+    minHeight: 100,
+    justifyContent: 'space-between',
+  },
+  tileNumber: { color: colors.brand, fontSize: 32, fontWeight: '700' },
+  tileLabel: { color: colors.muted, fontSize: 13 },
+  favBtn: {
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radii.md,
+    padding: spacing.md,
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+  },
+  favBtnLabel: { color: colors.fg, fontSize: 15, fontWeight: '600' },
+  footer: { color: colors.muted, fontSize: 12, lineHeight: 18, marginTop: spacing.lg },
+});

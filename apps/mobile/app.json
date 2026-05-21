@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Unofficial Glasto",
+    "slug": "unofficial-glasto",
+    "scheme": "glasto",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": false,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.unofficialglasto.app"
+    },
+    "android": {
+      "package": "com.unofficialglasto.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0a0a0a"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "plugins": ["expo-router"],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "apiBaseUrl": "https://0pmdeq1cnb.execute-api.us-east-1.amazonaws.com/Prod"
+    }
+  }
+}

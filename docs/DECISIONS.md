@@ -53,3 +53,12 @@
 - **Context:** Performance, Artist, Stage, User, Favourite entities — five types, all small, with predictable access patterns.
 - **Decision:** Single table with one GSI per the schema in `ARCHITECTURE.md`.
 - **Consequences:** All access goes through adapters. Cost-efficient, scales well; trade-off is more rigid query patterns (acceptable here).
+
+## ADR-007: AsyncStorage (not SQLite) for the mobile TanStack Query cache
+
+- **Date:** 2026-05-21
+- **Status:** Accepted (supersedes the SQLite line in the original plan)
+- **Context:** The mobile app needs an offline cache for the lineup payload (~3–4k items per year, ~1MB JSON). The plan originally specified `expo-sqlite`, but TanStack Query's persist client expects a key/value `AsyncStorage`-like interface, not a relational store.
+- **Decision:** Use `@tanstack/query-async-storage-persister` backed by `@react-native-async-storage/async-storage`, mirroring the web app's IndexedDB-backed persister.
+- **Alternatives considered:** Wrapping `expo-sqlite` in an AsyncStorage shim (extra code, no real benefit at this scale); `react-native-mmkv` (faster, but a native module that complicates Expo Go testing).
+- **Consequences:** Mobile favourites and query cache use the same JSON-blob storage model as web — easier to reason about. If payload sizes outgrow AsyncStorage's practical limits (~6MB on iOS) we can swap in MMKV without changing the persister API.

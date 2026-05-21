@@ -55,11 +55,13 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 - [x] Service Worker + offline cache via Vite PWA plugin (full offline shell)
 - [x] Deployed to S3 + CloudFront — <https://d5zgsiw27b3ju.cloudfront.net>
 
-### Phase 3 — Mobile MVP 🔴 Not Started
+### Phase 3 — Mobile MVP 🟡 In Progress
 
-- [ ] Expo app shell with Expo Router
-- [ ] Reuse `packages/shared` query hooks
-- [ ] SQLite-persisted query cache
+- [x] Expo app shell with Expo Router (file-based routing under `apps/mobile/app/`)
+- [x] Reuse `packages/shared` query hooks (`useLineup` etc.)
+- [x] AsyncStorage-persisted query cache (see [ADR-007](DECISIONS.md))
+- [x] Lineup browse, search, day/area filter, favourites screens
+- [ ] Verified on iOS / Android simulator
 - [ ] EAS preview build
 
 ### Phase 4 — Spotify + Artist Pages 🔴 Not Started

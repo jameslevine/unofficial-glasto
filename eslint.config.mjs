@@ -14,6 +14,8 @@ export default [
       '**/.aws-sam/**',
       '**/*.tsbuildinfo',
       '**/*.cjs',
+      'apps/mobile/babel.config.js',
+      'apps/mobile/metro.config.js',
     ],
   },
   js.configs.recommended,
