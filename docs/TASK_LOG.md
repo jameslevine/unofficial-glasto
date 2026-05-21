@@ -4,7 +4,7 @@
 
 - **Task:** Phase 3 — Mobile MVP (Expo app shell)
 - **Started:** 2026-05-21
-- **Context:** Scaffolded `apps/mobile` with Expo Router + TanStack Query + AsyncStorage cache + Zustand favourites. Repo-wide typecheck and lint clean. Outstanding: open in iOS simulator (`npm run dev:mobile -- --ios`) to confirm runtime, then build an EAS preview.
+- **Context:** Bundling chain green: Metro bundles `index.js (1038 modules)` cleanly and `expo export --platform web` exports all 5 routes. Fixes landed for monorepo babel resolution (expo-router-plugin), shared-package `.js` ESM imports, single-React enforcement, and react-native version pinning across workspaces. Outstanding: the iOS 26.3 simulator only has Expo Go 2.31.6 (built against iOS 17 SDK), which crashes at runtime with `useId of null` in `withDevTools` — independent of our code, since the bundle is valid. Path forward is an EAS development build against iOS 26 (skips Expo Go entirely).
 
 ## ✅ Completed Tasks
 
