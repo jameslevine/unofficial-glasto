@@ -1,0 +1,849 @@
+[
+  {
+    "slug": "10-aces",
+    "name": "10 ACES",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "a-little-more-sensation",
+    "name": "A LITTLE MORE SENSATION",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "acoustic-stage",
+    "name": "ACOUSTIC STAGE",
+    "area": "MAIN STAGES",
+    "lat": 51.1532,
+    "lon": -2.5832
+  },
+  {
+    "slug": "ancient-futures",
+    "name": "ANCIENT FUTURES",
+    "area": "GREEN FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "arcadia",
+    "name": "ARCADIA",
+    "area": "MAIN STAGES",
+    "lat": 51.1494,
+    "lon": -2.5959
+  },
+  {
+    "slug": "arrivals",
+    "name": "ARRIVALS",
+    "area": "SHANGRI-LA",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "assembly",
+    "name": "ASSEMBLY",
+    "area": "SILVER HAYES",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "atchin-tan",
+    "name": "ATCHIN TAN",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "avalon-cafe-stage",
+    "name": "AVALON CAFÉ STAGE",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "avalon-stage",
+    "name": "AVALON STAGE",
+    "area": "MAIN STAGES",
+    "lat": 51.1524,
+    "lon": -2.5779
+  },
+  {
+    "slug": "azaadi",
+    "name": "AZAADI",
+    "area": "SHANGRI-LA",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "babylon-uprising",
+    "name": "BABYLON UPRISING",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "bbc-introducing",
+    "name": "BBC INTRODUCING",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "bbc-music-introducing",
+    "name": "BBC MUSIC INTRODUCING",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "bellas-field",
+    "name": "BELLA'S FIELD",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "bimble-inn",
+    "name": "BIMBLE INN",
+    "area": "THE PARK",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "blind-tiger",
+    "name": "BLIND TIGER",
+    "area": "UNFAIRGROUND",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "block9",
+    "name": "BLOCK9",
+    "area": "BLOCK9",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "bread-and-roses",
+    "name": "BREAD AND ROSES",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "brewery-bar",
+    "name": "BREWERY BAR",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "cabaret",
+    "name": "CABARET",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "carhenge",
+    "name": "CARHENGE",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "cineramageddon",
+    "name": "CINERAMAGEDDON",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "circus-big-top",
+    "name": "CIRCUS BIG TOP",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "circus-field",
+    "name": "CIRCUS FIELD",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "cornish-arms",
+    "name": "CORNISH ARMS",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "croissant-neuf",
+    "name": "CROISSANT NEUF",
+    "area": "GREEN FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "croissant-neuf-bandstand",
+    "name": "CROISSANT NEUF BANDSTAND",
+    "area": "GREEN FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "crooners-corner",
+    "name": "CROONER'S CORNER",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "deluxe-diner",
+    "name": "DELUXE DINER",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "firmly-rooted",
+    "name": "FIRMLY ROOTED",
+    "area": "SILVER HAYES",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "flying-bus",
+    "name": "FLYING BUS",
+    "area": "UNFAIRGROUND",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "free-university-of-glastonbury",
+    "name": "FREE UNIVERSITY OF GLASTONBURY",
+    "area": "THE PARK",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "genosys",
+    "name": "GENOSYS",
+    "area": "BLOCK9",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "glade",
+    "name": "GLADE",
+    "area": "GLADE",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "glade-dome",
+    "name": "GLADE DOME",
+    "area": "GLADE",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "glasto-latino",
+    "name": "GLASTO LATINO",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "glebeland",
+    "name": "GLEBELAND",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "green-fields",
+    "name": "GREEN FIELDS",
+    "area": "GREEN FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "greenpeace",
+    "name": "GREENPEACE",
+    "area": "GREEN FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "greenpeace-beam",
+    "name": "GREENPEACE (BEAM)",
+    "area": "GREEN FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "hms-sweet-charity",
+    "name": "HMS SWEET CHARITY",
+    "area": "THE PARK",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "humblewell-active-platform",
+    "name": "HUMBLEWELL ACTIVE PLATFORM",
+    "area": "THE PARK",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "humblewell-retreat-yurt",
+    "name": "HUMBLEWELL RETREAT YURT",
+    "area": "THE PARK",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "iicon",
+    "name": "IICON",
+    "area": "BLOCK9",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "john-peel",
+    "name": "JOHN PEEL",
+    "area": "MAIN STAGES",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "juggling-tent",
+    "name": "JUGGLING TENT",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "kidzfield-big-top",
+    "name": "KIDZFIELD BIG TOP",
+    "area": "KIDZ FIELD",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "kinetic",
+    "name": "KINETIC",
+    "area": "THE COMMON",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "laboratory-stage",
+    "name": "LABORATORY STAGE",
+    "area": "GREEN FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "left-field",
+    "name": "LEFT FIELD",
+    "area": "MAIN STAGES",
+    "lat": 51.1528,
+    "lon": -2.5961
+  },
+  {
+    "slug": "levels",
+    "name": "LEVELS",
+    "area": "MAIN STAGES",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "lonely-hearts-club",
+    "name": "LONELY HEARTS CLUB",
+    "area": "SILVER HAYES",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "lore",
+    "name": "LORE",
+    "area": "SHANGRI-LA",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "luna",
+    "name": "LUNA",
+    "area": "SHANGRI-LA",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "lunched-out-lizards",
+    "name": "LUNCHED OUT LIZARDS",
+    "area": "GREEN FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "mandala-stage",
+    "name": "MANDALA STAGE",
+    "area": "GREEN FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "mavericks",
+    "name": "MAVERICKS",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "meeting-place-bar",
+    "name": "MEETING PLACE BAR",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "mez-yard",
+    "name": "MEZ YARD",
+    "area": "THE COMMON",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "nomad",
+    "name": "NOMAD",
+    "area": "SHANGRI-LA",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "nowhere",
+    "name": "NOWHERE",
+    "area": "SHANGRI-LA",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "nyc-downlow",
+    "name": "NYC DOWNLOW",
+    "area": "BLOCK9",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "other",
+    "name": "OTHER",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "other-stage",
+    "name": "OTHER STAGE",
+    "area": "MAIN STAGES",
+    "lat": 51.1545,
+    "lon": -2.5917
+  },
+  {
+    "slug": "outside-circus-stage",
+    "name": "OUTSIDE CIRCUS STAGE",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "peace-stage",
+    "name": "PEACE STAGE",
+    "area": "SHANGRI-LA",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "pier---10-aces-stage",
+    "name": "PIER - 10 ACES STAGE",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "pier-bandstand",
+    "name": "PIER BANDSTAND",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "pilton-palais-cinema",
+    "name": "PILTON PALAIS CINEMA",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "platform-23",
+    "name": "PLATFORM 23",
+    "area": "SHANGRI-LA",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "poetrywords",
+    "name": "POETRY&WORDS",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "pyramid-stage",
+    "name": "PYRAMID STAGE",
+    "area": "MAIN STAGES",
+    "lat": 51.1539,
+    "lon": -2.5871
+  },
+  {
+    "slug": "rimskis-yard",
+    "name": "RIMSKI'S YARD",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "san-remo",
+    "name": "SAN REMO",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "scissors",
+    "name": "SCISSORS",
+    "area": "THE PARK",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "sensation-seekers-stage",
+    "name": "SENSATION SEEKERS STAGE",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "setting-sun",
+    "name": "SETTING SUN",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "shangri-la",
+    "name": "SHANGRI-LA",
+    "area": "SHANGRI-LA",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "shangri-la-stage",
+    "name": "SHANGRI-LA STAGE",
+    "area": "SHANGRI-LA",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "silver-hayes",
+    "name": "SILVER HAYES",
+    "area": "MAIN STAGES",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "small-world-stage",
+    "name": "SMALL WORLD STAGE",
+    "area": "GREEN FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "speakers-forum",
+    "name": "SPEAKERS FORUM",
+    "area": "GREEN FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "stonebridge-bar",
+    "name": "STONEBRIDGE BAR",
+    "area": "THE PARK",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "strummerville",
+    "name": "STRUMMERVILLE",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "summer-house",
+    "name": "SUMMER HOUSE",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "temple-uprising",
+    "name": "TEMPLE UPRISING",
+    "area": "THE COMMON",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "terminal-1",
+    "name": "TERMINAL 1",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-apocalypse-museum-greenpeace",
+    "name": "THE APOCALYPSE MUSEUM @ GREENPEACE",
+    "area": "GREENPEACE",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-astrolabe-theatre",
+    "name": "THE ASTROLABE THEATRE",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-bandstand",
+    "name": "THE BANDSTAND",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-bug",
+    "name": "THE BUG",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-common",
+    "name": "THE COMMON",
+    "area": "THE COMMON",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-gateway",
+    "name": "THE GATEWAY",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-glebe",
+    "name": "THE GLEBE",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-hive",
+    "name": "THE HIVE",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-information",
+    "name": "THE INFORMATION",
+    "area": "SILVER HAYES",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-kidz-field",
+    "name": "THE KIDZ FIELD",
+    "area": "KIDZ FIELD",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-meatrack",
+    "name": "THE MEATRACK",
+    "area": "BLOCK9",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-park",
+    "name": "THE PARK",
+    "area": "MAIN STAGES",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-park-stage",
+    "name": "THE PARK STAGE",
+    "area": "MAIN STAGES",
+    "lat": 51.1614,
+    "lon": -2.5847
+  },
+  {
+    "slug": "the-pavement",
+    "name": "THE PAVEMENT",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-rocket-lounge",
+    "name": "THE ROCKET LOUNGE",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-rum-shack",
+    "name": "THE RUM SHACK",
+    "area": "THE COMMON",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-salon-carousel",
+    "name": "THE SALON CAROUSEL",
+    "area": "UNFAIRGROUND",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-sistxrhood",
+    "name": "THE SISTXRHOOD",
+    "area": "SHANGRI-LA",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-taphouse",
+    "name": "THE TAPHOUSE",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "the-temple",
+    "name": "THE TEMPLE",
+    "area": "THE COMMON",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "theatre-circus",
+    "name": "THEATRE & CIRCUS",
+    "area": "THEATRE & CIRCUS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "theatre-circus-fields",
+    "name": "THEATRE & CIRCUS FIELDS",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "toad-hall",
+    "name": "TOAD HALL",
+    "area": "GREEN FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "tree-stage",
+    "name": "TREE STAGE",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "unfairground",
+    "name": "UNFAIRGROUND",
+    "area": "UNFAIRGROUND",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "village-inn",
+    "name": "VILLAGE INN",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "walkabouts",
+    "name": "WALKABOUTS",
+    "area": "THEATRE & CIRCUS FIELDS",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "west-holts",
+    "name": "WEST HOLTS",
+    "area": "MAIN STAGES",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "west-holts-bar",
+    "name": "WEST HOLTS BAR",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "west-holts-stage",
+    "name": "WEST HOLTS STAGE",
+    "area": "MAIN STAGES",
+    "lat": 51.1517,
+    "lon": -2.5918
+  },
+  {
+    "slug": "williams-green",
+    "name": "WILLIAM'S GREEN",
+    "area": "OTHER",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "wishing-well",
+    "name": "WISHING WELL",
+    "area": "THE PARK",
+    "lat": null,
+    "lon": null
+  },
+  {
+    "slug": "woodsies",
+    "name": "WOODSIES",
+    "area": "MAIN STAGES",
+    "lat": 51.1571,
+    "lon": -2.5904
+  }
+]

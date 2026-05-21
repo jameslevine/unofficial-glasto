@@ -50,8 +50,8 @@ export const Stage = z.object({
   slug: z.string(),
   name: z.string(),
   area: z.string(),
-  lat: z.number(),
-  lon: z.number(),
+  lat: z.number().nullable(),
+  lon: z.number().nullable(),
   mapZone: z.string().optional(),
 });
 export type Stage = z.infer<typeof Stage>;

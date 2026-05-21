@@ -42,7 +42,8 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 - [x] Express + Lambda backend with `/lineup/:year`, `/stages`
 - [x] TypeScript scraper for `glastonburyfestivals.co.uk`
 - [x] Seed data committed for 2022–2025
-- [ ] Spotify Client Credentials integration at ingest
+- [x] Spotify Client Credentials integration at ingest
+- [x] DDB seed loader (`scripts/load-seeds.ts`) for first deploy
 - [ ] Deploy to dev env and smoke-test `/v1/lineup/2024`
 
 ### Phase 2 — Web MVP 🔴 Not Started
