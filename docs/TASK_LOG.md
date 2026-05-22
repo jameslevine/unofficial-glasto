@@ -2,9 +2,9 @@
 
 ## 🔵 Current Task
 
-- **Task:** Phase 6 — cross-device sync smoke test
+- **Task:** Phase 7 — polish + 2026 readiness (a11y, perf budgets, i18n scaffold, scraper validation against 2026 lineup)
 - **Started:** 2026-05-22
-- **Context:** Backend Cognito user pool + Hosted UI + `/me/sync` endpoint deployed in `glasto-dev`. Web wired with PKCE OAuth2 (`apps/web/src/lib/auth.ts`), `/auth/callback` route exchanges the code, `useFavouritesSync` runs once per signed-in session and merges server state via last-write-wins on `updatedAt`. Mobile mirrors the same flow via `expo-auth-session` (PKCE) with tokens in `expo-secure-store`; sign-in chip on the home screen and the same sync hook. Pending: deploy the updated web bundle and verify cross-device round-trip (favourite on one device → appears on the other after sign-in).
+- **Context:** Phase 6 complete. Cross-device favourite sync verified end-to-end on the deployed CloudFront site (favourite from Browser A → DDB → fresh-state Browser B picks it up after sign-in). Mobile auth + sync wired identically; deferred-device smoke test remains in "Next Up" but is not blocking Phase 7.
 
 ## ✅ Completed Tasks
 
@@ -50,6 +50,8 @@
 | 2026-05-22 | Cognito user pool + Hosted UI + `/me/sync` endpoint deployed (last-write-wins via DDB)      | Domain `glasto-dev-563146874500.auth.us-east-1.amazoncognito.com` |
 | 2026-05-22 | Web Cognito Hosted UI auth (PKCE) + `useFavouritesSync` hook + sign-in/out chip             | Tokens in localStorage; verifier in sessionStorage                |
 | 2026-05-22 | Mobile Cognito Hosted UI auth (PKCE via `expo-auth-session`, tokens in `expo-secure-store`) | Sign-in chip on home; mirrors web sync hook                       |
+| 2026-05-22 | Web auth derives redirect URI from `window.location.origin` (single build for localhost+CF) | Removed `VITE_AUTH_REDIRECT_URI` env var dependency               |
+| 2026-05-22 | Cross-device sync verified end-to-end on deployed CloudFront site                           | Browser A favourite → DDB → fresh Browser B picks it up on signin |
 
 ## 🔴 Blocked / Pending
 
@@ -57,8 +59,9 @@
 
 ## ⏭️ Next Up
 
-1. Deploy web bundle (S3 sync + CF invalidation) and smoke-test sign-in → favourite → sign in on second browser → confirm sync
-2. Smoke-test mobile auth + sync end-to-end on iOS sim
-3. Smoke-test mobile offline tile pack: download → airplane mode → reload `/map`
-4. EAS preview build for device + TestFlight
-5. Apply for Spotify Extended Quota Mode to restore `/top-tracks` (and remove embed-only fallback)
+1. Smoke-test mobile auth + sync end-to-end on iOS sim
+2. Smoke-test mobile offline tile pack: download → airplane mode → reload `/map`
+3. EAS preview build for device + TestFlight
+4. Phase 7 — WCAG 2.1 AA pass on web (focus order, contrast, screen-reader labels)
+5. Phase 7 — Performance budgets (LCP < 2s, INP < 200ms) + i18n scaffolding
+6. Apply for Spotify Extended Quota Mode to restore `/top-tracks` (and remove embed-only fallback)

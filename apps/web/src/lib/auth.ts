@@ -1,6 +1,6 @@
 const DOMAIN = import.meta.env.VITE_COGNITO_DOMAIN as string | undefined;
 const CLIENT_ID = import.meta.env.VITE_COGNITO_CLIENT_ID as string | undefined;
-const REDIRECT_URI = import.meta.env.VITE_AUTH_REDIRECT_URI as string | undefined;
+const getRedirectUri = () => `${window.location.origin}/auth/callback`;
 
 const TOKEN_KEY = 'glasto-auth-tokens';
 const VERIFIER_KEY = 'glasto-pkce-verifier';
@@ -13,7 +13,7 @@ export interface AuthTokens {
   expiresAt: number;
 }
 
-export const isAuthConfigured = () => Boolean(DOMAIN && CLIENT_ID && REDIRECT_URI);
+export const isAuthConfigured = () => Boolean(DOMAIN && CLIENT_ID);
 
 const base64Url = (bytes: ArrayBuffer) =>
   btoa(String.fromCharCode(...new Uint8Array(bytes)))
@@ -64,7 +64,7 @@ export const beginSignIn = async (returnTo?: string) => {
   url.searchParams.set('client_id', CLIENT_ID!);
   url.searchParams.set('response_type', 'code');
   url.searchParams.set('scope', 'email openid profile');
-  url.searchParams.set('redirect_uri', REDIRECT_URI!);
+  url.searchParams.set('redirect_uri', getRedirectUri());
   url.searchParams.set('code_challenge_method', 'S256');
   url.searchParams.set('code_challenge', challenge);
   window.location.assign(url.toString());
@@ -79,7 +79,7 @@ export const exchangeCodeForTokens = async (code: string): Promise<AuthTokens> =
     grant_type: 'authorization_code',
     client_id: CLIENT_ID!,
     code,
-    redirect_uri: REDIRECT_URI!,
+    redirect_uri: getRedirectUri(),
     code_verifier: verifier,
   });
 

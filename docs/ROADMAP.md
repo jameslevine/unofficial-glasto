@@ -81,13 +81,13 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 - [x] Mobile native `@rnmapbox/maps` rebuild via `eas build --profile development` (verified in iOS simulator)
 - [x] Mobile offline tile pack (`OfflineManager.createPack` for Worthy Farm bbox, zoom 13–18)
 
-### Phase 6 — Cognito + Sync 🟡 In Progress
+### Phase 6 — Cognito + Sync 🟢 Complete
 
 - [x] Cognito user pool + Hosted UI domain (`glasto-dev-563146874500.auth.us-east-1.amazoncognito.com`)
 - [x] `/me/favourites` + `/me/sync` endpoints (last-write-wins via DDB conditional write)
 - [x] Web PKCE OAuth2 + sync-on-sign-in
 - [x] Mobile PKCE via `expo-auth-session` + tokens in `expo-secure-store` + sync-on-sign-in
-- [ ] Cross-device favourites verified end-to-end
+- [x] Cross-device favourites verified end-to-end (Browser A → server → Browser B fresh state)
 
 ### Phase 7 — Polish + 2026 Readiness 🔴 Not Started
 
