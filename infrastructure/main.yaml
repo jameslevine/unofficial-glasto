@@ -90,6 +90,8 @@ Resources:
           TABLE_NAME: !Ref Table
           COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
           COGNITO_CLIENT_ID: !Ref CognitoClientId
+          SPOTIFY_CLIENT_ID: !Ref SpotifyClientId
+          SPOTIFY_CLIENT_SECRET: !Ref SpotifyClientSecret
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table

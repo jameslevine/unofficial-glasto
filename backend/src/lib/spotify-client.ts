@@ -79,7 +79,7 @@ export const searchArtist = async (name: string): Promise<SpotifyArtistMatch | n
     name: best.name,
     url: best.external_urls.spotify,
     imageUrl: best.images[0]?.url ?? null,
-    genres: best.genres,
+    genres: best.genres ?? [],
   };
 };
 

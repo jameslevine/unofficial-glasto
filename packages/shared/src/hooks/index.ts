@@ -19,10 +19,10 @@ export const useStages = (api: ApiClient) =>
     staleTime: 1000 * 60 * 60 * 24,
   });
 
-export const useArtist = (api: ApiClient, slug: string | undefined) =>
+export const useArtist = (api: ApiClient, slug: string | undefined, name?: string) =>
   useQuery({
     enabled: !!slug,
     queryKey: artistQueryKey(slug ?? ''),
-    queryFn: () => api.getArtist(slug as string),
+    queryFn: () => api.getArtist(slug as string, name),
     staleTime: 1000 * 60 * 60,
   });

@@ -45,10 +45,22 @@
 
 ### Artists
 
-| Method | Path                     | Auth | Description                                           |
-| ------ | ------------------------ | ---- | ----------------------------------------------------- |
-| GET    | `/artists/:slug`         | —    | Artist detail with cached Spotify metadata.           |
-| GET    | `/artists/:slug/spotify` | —    | Live Spotify proxy (top tracks, embed URL). 1h cache. |
+| Method | Path                     | Auth | Description                                                                      |
+| ------ | ------------------------ | ---- | -------------------------------------------------------------------------------- |
+| GET    | `/artists/:slug`         | —    | Artist detail; lazy-resolves via Spotify on cache miss. 30-day TTL.              |
+| GET    | `/artists/:slug/spotify` | —    | Live Spotify proxy (top tracks, embed URL). 1h cache. _Deferred (Dev-mode 403)._ |
+
+**Query params (`/artists/:slug`):**
+
+| Param  | Required | Description                                                                                    |
+| ------ | -------- | ---------------------------------------------------------------------------------------------- |
+| `name` | optional | Display name to use for Spotify search on cache miss. Required if no cached artist exists yet. |
+
+**Behaviour:**
+
+- If cached and `lastResolvedAt < 30 days`: returns cached entry.
+- If cache miss: requires `?name=` to perform a Spotify Client Credentials search; result is cached (including blank fallback) and returned.
+- Top-tracks are best-effort — Spotify Development-mode apps receive 403 on `/v1/artists/:id/top-tracks`, in which case `topTracks: []`. The web embed iframe (`https://open.spotify.com/embed/artist/:id`) renders top tracks regardless.
 
 #### `GET /artists/:slug`
 

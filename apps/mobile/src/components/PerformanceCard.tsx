@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useRouter } from 'expo-router';
 import type { Performance } from '@glasto/shared';
 import { colors, radii, spacing } from '../lib/theme';
 import { formatTime } from '../lib/format';
@@ -12,6 +13,28 @@ interface Props {
 const PerformanceCardInner = ({ performance }: Props) => {
   const isFav = useFavourites((s) => Boolean(s.ids[performance.id]));
   const toggle = useFavourites((s) => s.toggle);
+  const router = useRouter();
+
+  const goToArtist = () => {
+    if (!performance.artistSlug) return;
+    router.push({
+      pathname: '/artists/[slug]',
+      params: { slug: performance.artistSlug, name: performance.title },
+    });
+  };
+
+  const Body = (
+    <View style={styles.body}>
+      <Text style={styles.title} numberOfLines={2}>
+        {performance.title}
+      </Text>
+      <Text style={styles.stage} numberOfLines={1}>
+        {performance.stage}
+        <Text style={styles.dot}> · </Text>
+        <Text style={styles.area}>{performance.area}</Text>
+      </Text>
+    </View>
+  );
 
   return (
     <View style={styles.row}>
@@ -19,16 +42,18 @@ const PerformanceCardInner = ({ performance }: Props) => {
         <Text style={styles.time}>{formatTime(performance.startsAt)}</Text>
         <Text style={styles.timeMuted}>{formatTime(performance.endsAt)}</Text>
       </View>
-      <View style={styles.body}>
-        <Text style={styles.title} numberOfLines={2}>
-          {performance.title}
-        </Text>
-        <Text style={styles.stage} numberOfLines={1}>
-          {performance.stage}
-          <Text style={styles.dot}> · </Text>
-          <Text style={styles.area}>{performance.area}</Text>
-        </Text>
-      </View>
+      {performance.artistSlug ? (
+        <Pressable
+          accessibilityRole="link"
+          accessibilityLabel={`Open ${performance.title}`}
+          onPress={goToArtist}
+          style={({ pressed }) => [styles.bodyTouchable, pressed && styles.bodyTouchablePressed]}
+        >
+          {Body}
+        </Pressable>
+      ) : (
+        Body
+      )}
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={isFav ? 'Remove favourite' : 'Add favourite'}
@@ -62,6 +87,8 @@ const styles = StyleSheet.create({
   time: { color: colors.fg, fontVariant: ['tabular-nums'], fontWeight: '600' },
   timeMuted: { color: colors.muted, fontSize: 12, fontVariant: ['tabular-nums'] },
   body: { flex: 1 },
+  bodyTouchable: { flex: 1 },
+  bodyTouchablePressed: { opacity: 0.6 },
   title: { color: colors.fg, fontSize: 15, fontWeight: '600' },
   stage: { color: colors.muted, fontSize: 12, marginTop: 2 },
   dot: { color: colors.border },

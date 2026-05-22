@@ -44,7 +44,10 @@ export const createApiClient = (opts: ApiClientOptions) => {
   return {
     getLineup: (year: number) => request(`/lineup/${year}`, z.array(Performance)),
     getStages: () => request('/stages', z.array(Stage)),
-    getArtist: (slug: string) => request(`/artists/${slug}`, Artist),
+    getArtist: (slug: string, name?: string) => {
+      const qs = name ? `?name=${encodeURIComponent(name)}` : '';
+      return request(`/artists/${slug}${qs}`, Artist);
+    },
   };
 };
 

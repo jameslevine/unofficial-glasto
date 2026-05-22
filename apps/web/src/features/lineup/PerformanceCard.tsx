@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import type { Performance } from '@glasto/shared';
 import { useFavourites } from '../../store/favourites';
 import { formatTime } from './utils';
@@ -10,7 +11,16 @@ export const PerformanceCard = ({ performance }: { performance: Performance }) =
     <article className="flex h-full flex-col justify-between gap-3 rounded-lg border border-border bg-surface p-3 transition hover:bg-surface-2">
       <div className="space-y-1">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-semibold leading-tight">{performance.title}</h3>
+          {performance.artistSlug ? (
+            <Link
+              to={`/artists/${performance.artistSlug}?name=${encodeURIComponent(performance.title)}`}
+              className="font-semibold leading-tight hover:text-brand hover:underline"
+            >
+              {performance.title}
+            </Link>
+          ) : (
+            <h3 className="font-semibold leading-tight">{performance.title}</h3>
+          )}
           <button
             type="button"
             onClick={() => toggle(performance.id)}
