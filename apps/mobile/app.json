@@ -7,6 +7,7 @@
     "orientation": "portrait",
     "userInterfaceStyle": "dark",
     "newArchEnabled": false,
+    "owner": "james.levine",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.unofficialglasto.app"
@@ -26,7 +27,10 @@
       "typedRoutes": true
     },
     "extra": {
-      "apiBaseUrl": "https://0pmdeq1cnb.execute-api.us-east-1.amazonaws.com/Prod"
+      "apiBaseUrl": "https://0pmdeq1cnb.execute-api.us-east-1.amazonaws.com/Prod",
+      "eas": {
+        "projectId": "5d3c1529-831b-4aea-8193-6693673a7e0e"
+      }
     }
   }
 }
