@@ -2,9 +2,9 @@
 
 ## 🔵 Current Task
 
-- **Task:** Phase 5 — Map + walking times (shipped)
+- **Task:** Phase 6 — Cognito + cross-device favourites sync (kicking off)
 - **Started:** 2026-05-22
-- **Context:** Mapbox GL JS powers the web `/map` route (lazy-loaded chunk so the main bundle stays at 335KB) and `@rnmapbox/maps` powers the mobile `/map` screen. Both render stage pins for the 9 main stages with coords, with a callout on tap. Site centred on Worthy Farm `[-2.5871, 51.1539]` with `outdoors-v12` style. Walking-time util in `@glasto/shared` (great-circle × 1.4 detour ÷ 5 km/h) renders between consecutive favourites within a day on web and mobile favourites screens. Web redeployed to S3 + CloudFront (invalidation `IBJ4AMKO5U0IDT0W13XWGU9635`). Mobile native rebuild required to test on simulator (not Expo Go compatible — `@rnmapbox/maps` is a native module).
+- **Context:** Phase 5 fully shipped. Mobile `/map` now offers a "Download for offline" pill (top-left) backed by `Mapbox.offlineManager.createPack({ name: 'worthy-farm', styleURL: 'outdoors-v12', minZoom: 13, maxZoom: 18, bounds: [[-2.55, 51.18], [-2.62, 51.13]] })` with progress %, idle/done/error states, and a tappable "✓ Offline ready" pill that calls `deletePack` for re-downloading. On screen mount we call `getPack(PACK_NAME)` to restore state from disk. Next: Cognito user pool, `/me/favourites` endpoints, last-write-wins merge on first sign-in.
 
 ## ✅ Completed Tasks
 
@@ -46,6 +46,7 @@
 | 2026-05-22 | Redeployed web to <https://d5zgsiw27b3ju.cloudfront.net> with map + walking times        | Sync to S3 + CF invalidation `IBJ4AMKO5U0IDT0W13XWGU9635`        |
 | 2026-05-22 | EAS dev build for iOS simulator finished — installed and verified `/map` renders 9 pins  | Build `b55f9891-14f5-4f1c-92ac-218a0e8af177`; pinned to 10.1.38  |
 | 2026-05-22 | Switched mobile pin from `<Text onPress>` to `<Pressable><Text/></Pressable>`            | `<Text>` inside `MarkerView` doesn't render reliably as a marker |
+| 2026-05-22 | Added Mapbox offline pack to mobile `/map` (Worthy Farm bbox, z13–18, `outdoors-v12`)    | Pill UI: idle/downloading/%/done/error; `getPack` rehydrates     |
 
 ## 🔴 Blocked / Pending
 
@@ -53,7 +54,7 @@
 
 ## ⏭️ Next Up
 
-1. EAS dev rebuild for iOS so `@rnmapbox/maps` native module loads in the simulator
-2. EAS preview build for device + TestFlight
-3. Phase 6 — Cognito + cross-device favourites sync
+1. Smoke-test mobile offline pack: tap "Download for offline", airplane-mode the simulator, reload `/map`, confirm tiles still render
+2. Phase 6 — Cognito user pool + `/me/favourites` endpoints + last-write-wins sync
+3. EAS preview build for device + TestFlight
 4. Apply for Spotify Extended Quota Mode to restore `/top-tracks` (and remove embed-only fallback)

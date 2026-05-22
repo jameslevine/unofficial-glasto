@@ -72,14 +72,14 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 - [x] Offline fallback (cached metadata + deep-link; embed-only when API top-tracks blocked)
 - [x] PerformanceCards link title → artist page on web + mobile
 
-### Phase 5 — Map + Walking Times 🟡 In Progress
+### Phase 5 — Map + Walking Times 🟢 Complete
 
 - [x] Mapbox `outdoors-v12` style (custom style deferred — outdoors-v12 reads well at zoom 14-18)
-- [x] Stage pins on web (Mapbox GL JS, lazy-loaded) + mobile (`@rnmapbox/maps@10.2.10`)
+- [x] Stage pins on web (Mapbox GL JS, lazy-loaded) + mobile (`@rnmapbox/maps@10.1.38`)
 - [x] Walking time estimates between consecutive favourites within a day (great-circle × 1.4 ÷ 5 km/h)
 - [x] Web Service Worker raises Workbox precache limit to 4MB so the Mapbox chunk is precached
-- [ ] Mobile native `@rnmapbox/maps` rebuild via `eas build --profile development` (untested in simulator until then)
-- [ ] Mobile offline tile pack (`OfflineManager.createPack` for Worthy Farm bbox, zoom 13–18)
+- [x] Mobile native `@rnmapbox/maps` rebuild via `eas build --profile development` (verified in iOS simulator)
+- [x] Mobile offline tile pack (`OfflineManager.createPack` for Worthy Farm bbox, zoom 13–18)
 
 ### Phase 6 — Cognito + Sync 🔴 Not Started
 
