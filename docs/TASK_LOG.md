@@ -2,9 +2,9 @@
 
 ## 🔵 Current Task
 
-- **Task:** Phase 3 — EAS preview build for iOS
+- **Task:** Phase 5 — Map + walking times (shipped)
 - **Started:** 2026-05-22
-- **Context:** Mobile MVP runs end-to-end on the iPhone 17 Pro simulator (iOS 26.3) via Expo Go: lineup renders ~4k performances responsively, search/filters are instant, favouriting works, favourites persist across reopens, and unfavouriting drops from the list. Earlier `useId of null` runtime crash turned out to also be a perf issue — switching the lineup ScrollView to a virtualized SectionList unblocked it. Now needs an EAS preview build for device testing + TestFlight path.
+- **Context:** Mapbox GL JS powers the web `/map` route (lazy-loaded chunk so the main bundle stays at 335KB) and `@rnmapbox/maps` powers the mobile `/map` screen. Both render stage pins for the 9 main stages with coords, with a callout on tap. Site centred on Worthy Farm `[-2.5871, 51.1539]` with `outdoors-v12` style. Walking-time util in `@glasto/shared` (great-circle × 1.4 detour ÷ 5 km/h) renders between consecutive favourites within a day on web and mobile favourites screens. Web redeployed to S3 + CloudFront (invalidation `IBJ4AMKO5U0IDT0W13XWGU9635`). Mobile native rebuild required to test on simulator (not Expo Go compatible — `@rnmapbox/maps` is a native module).
 
 ## ✅ Completed Tasks
 
@@ -30,6 +30,22 @@
 | 2026-05-21 | Logged ADR-007: AsyncStorage (not SQLite) for the mobile query cache                     | Matches TanStack Query persist API; swap to MMKV later if needed |
 | 2026-05-22 | Got the mobile bundle running in Expo Go on iOS 26.3                                     | babel/metro/version-dedup fixes landed; smoke test green         |
 | 2026-05-22 | Virtualized lineup screen with SectionList (was unvirtualized ScrollView over ~4k items) | Memoized PerformanceCard on id; search and filters now instant   |
+| 2026-05-22 | Verified EAS dev-build + Metro handshake on iOS simulator                                | Phase 3 wrapped — dev client renders home through Metro          |
+| 2026-05-22 | Backend `/artists/:slug` lazy-resolves via Spotify and caches to DDB (30-day TTL)        | Top-tracks 403 in Dev mode — gracefully degrades to embed-only   |
+| 2026-05-22 | Wired `SpotifyClientId/Secret` into ApiFunction Env in `main.yaml`; redeployed           | Was previously only on ScraperFunction                           |
+| 2026-05-22 | Web `/artists/:slug` page with Spotify embed iframe + back-link                          | Title `Coldplay`, embed renders 10 tracks, 0 console errors      |
+| 2026-05-22 | Mobile `app/artists/[slug].tsx` screen + `useArtist(api, slug, name?)` hook              | Lazy-resolve via `?name=` query param; Image + Linking deep-link |
+| 2026-05-22 | PerformanceCard linkifies title to artist page (web + mobile)                            | Star button stays separate; Pressable wraps title block on RN    |
+| 2026-05-22 | Redeployed web to <https://d5zgsiw27b3ju.cloudfront.net> with artist page                | Sync to S3 + CF invalidation `I7Y25QUWF9EKZ97KNB2K9C2HKF`        |
+| 2026-05-22 | Added `walkingMinutes` util to `@glasto/shared` (haversine × 1.4 detour ÷ 5 km/h)        | 3 vitest cases pass; Pyramid→Park ≈ 12-20 min                    |
+| 2026-05-22 | Built web `/map` route with Mapbox GL JS (`outdoors-v12`, lazy-loaded chunk)             | Pin pills on brand colour; flyTo + callout on click; 0 errors    |
+| 2026-05-22 | Bumped Workbox `maximumFileSizeToCacheInBytes` to 4MB so Mapbox chunk precaches          | Main bundle stays at 335KB; Mapbox chunk 1.8MB lazy              |
+| 2026-05-22 | Walking-time line between consecutive favourites on web + mobile schedule view           | Only renders when both stages have lat/lon                       |
+| 2026-05-22 | Built mobile `/map` screen with `@rnmapbox/maps@10.2.10` (peer-pinned for RN 0.74)       | Native module — needs EAS dev rebuild to test in simulator       |
+| 2026-05-22 | Registered `@rnmapbox/maps` Expo plugin + `mapboxToken` extra in `app.json`              | Token gitignored on web (`.env.local`); shipped via app config   |
+| 2026-05-22 | Redeployed web to <https://d5zgsiw27b3ju.cloudfront.net> with map + walking times        | Sync to S3 + CF invalidation `IBJ4AMKO5U0IDT0W13XWGU9635`        |
+| 2026-05-22 | EAS dev build for iOS simulator finished — installed and verified `/map` renders 9 pins  | Build `b55f9891-14f5-4f1c-92ac-218a0e8af177`; pinned to 10.1.38  |
+| 2026-05-22 | Switched mobile pin from `<Text onPress>` to `<Pressable><Text/></Pressable>`            | `<Text>` inside `MarkerView` doesn't render reliably as a marker |
 
 ## 🔴 Blocked / Pending
 
@@ -37,5 +53,7 @@
 
 ## ⏭️ Next Up
 
-1. EAS preview build (`eas build --profile preview --platform ios`) for device + TestFlight
-2. Phase 4 — Spotify proxy + artist pages
+1. EAS dev rebuild for iOS so `@rnmapbox/maps` native module loads in the simulator
+2. EAS preview build for device + TestFlight
+3. Phase 6 — Cognito + cross-device favourites sync
+4. Apply for Spotify Extended Quota Mode to restore `/top-tracks` (and remove embed-only fallback)

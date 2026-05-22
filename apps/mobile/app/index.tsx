@@ -19,11 +19,18 @@ export default function HomeScreen() {
         ))}
       </View>
 
-      <Link href="/favourites" asChild>
-        <Pressable style={styles.favBtn}>
-          <Text style={styles.favBtnLabel}>★ Favourites</Text>
-        </Pressable>
-      </Link>
+      <View style={styles.actionsRow}>
+        <Link href="/map" asChild>
+          <Pressable style={styles.actionBtn}>
+            <Text style={styles.actionLabel}>Map</Text>
+          </Pressable>
+        </Link>
+        <Link href="/favourites" asChild>
+          <Pressable style={styles.actionBtn}>
+            <Text style={styles.actionLabel}>★ Favourites</Text>
+          </Pressable>
+        </Link>
+      </View>
 
       <Text style={styles.footer}>
         Unofficial — fan-made. Lineup data from glastonburyfestivals.co.uk. Not affiliated with
@@ -50,7 +57,9 @@ const styles = StyleSheet.create({
   },
   tileNumber: { color: colors.brand, fontSize: 32, fontWeight: '700' },
   tileLabel: { color: colors.muted, fontSize: 13 },
-  favBtn: {
+  actionsRow: { flexDirection: 'row', gap: spacing.md },
+  actionBtn: {
+    flex: 1,
     borderWidth: 1,
     borderColor: colors.border,
     borderRadius: radii.md,
@@ -58,6 +67,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: colors.surface,
   },
-  favBtnLabel: { color: colors.fg, fontSize: 15, fontWeight: '600' },
+  actionLabel: { color: colors.fg, fontSize: 15, fontWeight: '600' },
   footer: { color: colors.muted, fontSize: 12, lineHeight: 18, marginTop: spacing.lg },
 });

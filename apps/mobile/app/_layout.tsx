@@ -20,6 +20,8 @@ export default function RootLayout() {
           <Stack.Screen name="index" options={{ title: 'Unofficial Glasto' }} />
           <Stack.Screen name="lineup/[year]" options={{ title: 'Lineup' }} />
           <Stack.Screen name="favourites" options={{ title: 'Favourites' }} />
+          <Stack.Screen name="artists/[slug]" options={{ title: 'Artist' }} />
+          <Stack.Screen name="map" options={{ title: 'Map' }} />
         </Stack>
       </AppProviders>
     </SafeAreaProvider>

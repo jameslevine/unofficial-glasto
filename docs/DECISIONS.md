@@ -54,6 +54,24 @@
 - **Decision:** Single table with one GSI per the schema in `ARCHITECTURE.md`.
 - **Consequences:** All access goes through adapters. Cost-efficient, scales well; trade-off is more rigid query patterns (acceptable here).
 
+## ADR-008: Lazy-load Mapbox GL JS chunk on web
+
+- **Date:** 2026-05-22
+- **Status:** Accepted
+- **Context:** `mapbox-gl` is ~1.8MB minified — including it in the main bundle would balloon initial page load and slow down lineup browsing (the primary flow). Workbox's default `maximumFileSizeToCacheInBytes` is 2MB, which the unified chunk also exceeds.
+- **Decision:** Load the `MapPage` route via `React.lazy()` inside a `Suspense` boundary, and bump Workbox `maximumFileSizeToCacheInBytes` to 4MB so the lazy chunk is precached for offline use.
+- **Alternatives considered:** Eager import (rejected — penalises non-map flows); `manualChunks` rollup splitting (didn't fix the precache size limit on its own).
+- **Consequences:** Main bundle stays at 335KB / 103KB gzipped. First map open downloads the Mapbox chunk on demand, then it's cached for offline. Trade-off: a brief loading state on first `/map` navigation.
+
+## ADR-009: `@rnmapbox/maps@10.1.38` pinned for React Native 0.74
+
+- **Date:** 2026-05-22
+- **Status:** Accepted (supersedes initial `10.2.10` pin)
+- **Context:** Latest `@rnmapbox/maps@10.3.x` requires `react-native >= 0.79`; Expo SDK 51 ships RN 0.74.5. The `10.2.x` line ships an ESM build that imports `./Mapbox` without the `.js` extension under `"type": "module"`, which Node's strict ESM resolver rejects — `npx expo config` (called by EAS Build) fails with `ERR_MODULE_NOT_FOUND`. `10.1.38` has the same RN peer-dep range (`>= 0.69`) and a CJS-friendly module shape.
+- **Decision:** Pin to `@rnmapbox/maps@10.1.38`.
+- **Alternatives considered:** Patching the package's `lib/module/index.js` via `patch-package` (rejected — extra moving part); upgrading Expo SDK 51 → 52 to get RN 0.79 (rejected — out of scope).
+- **Consequences:** Locks the Mapbox SDK version until we next bump Expo. Functional parity is fine — `MapView`, `Camera`, `MarkerView`, and `OfflineManager` all exist in 10.1.x.
+
 ## ADR-007: AsyncStorage (not SQLite) for the mobile TanStack Query cache
 
 - **Date:** 2026-05-21

@@ -1,8 +1,8 @@
 import { useQueries } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
-import type { Performance } from '@glasto/shared';
-import { lineupQueryKey } from '@glasto/shared';
+import type { Performance, Stage } from '@glasto/shared';
+import { lineupQueryKey, useStages, walkingMinutes } from '@glasto/shared';
 import { PerformanceCard } from '../src/components/PerformanceCard';
 import { api } from '../src/lib/api';
 import { formatDay, groupByDay } from '../src/lib/format';
@@ -27,6 +27,18 @@ export default function FavouritesScreen() {
   const favourites = useMemo<Performance[]>(() => all.filter((p) => ids[p.id]), [all, ids]);
   const grouped = useMemo(() => groupByDay(favourites), [favourites]);
 
+  const { data: stages } = useStages(api);
+  const stageBySlug = useMemo(() => {
+    const map = new Map<string, Stage>();
+    stages?.forEach((s) => {
+      map.set(s.slug, s);
+      map.set(s.name.toLowerCase().replace(/\s+/g, '-'), s);
+    });
+    return map;
+  }, [stages]);
+  const findStage = (perf: Performance): Stage | undefined =>
+    stageBySlug.get(perf.stage.toLowerCase().replace(/\s+/g, '-'));
+
   if (Object.keys(ids).length === 0) {
     return (
       <View style={styles.center}>
@@ -50,9 +62,32 @@ export default function FavouritesScreen() {
         <View key={d} style={styles.daySection}>
           <Text style={styles.dayHeading}>{formatDay(d)}</Text>
           <View style={styles.dayCard}>
-            {items.map((p) => (
-              <PerformanceCard key={p.id} performance={p} />
-            ))}
+            {items.map((p, i) => {
+              const prev = items[i - 1];
+              const fromStage = prev ? findStage(prev) : undefined;
+              const toStage = findStage(p);
+              const minutes =
+                prev &&
+                fromStage?.lat != null &&
+                fromStage?.lon != null &&
+                toStage?.lat != null &&
+                toStage?.lon != null
+                  ? walkingMinutes(
+                      { lat: fromStage.lat, lon: fromStage.lon },
+                      { lat: toStage.lat, lon: toStage.lon },
+                    )
+                  : null;
+              return (
+                <View key={p.id}>
+                  {minutes !== null && minutes > 0 && (
+                    <Text style={styles.walkLine}>
+                      ↳ ~{minutes} min walk from {prev?.stage}
+                    </Text>
+                  )}
+                  <PerformanceCard performance={p} />
+                </View>
+              );
+            })}
           </View>
         </View>
       ))}
@@ -79,5 +114,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     overflow: 'hidden',
+  },
+  walkLine: {
+    color: colors.muted,
+    fontSize: 12,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
   },
 });

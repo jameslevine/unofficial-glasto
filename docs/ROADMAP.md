@@ -55,27 +55,31 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 - [x] Service Worker + offline cache via Vite PWA plugin (full offline shell)
 - [x] Deployed to S3 + CloudFront — <https://d5zgsiw27b3ju.cloudfront.net>
 
-### Phase 3 — Mobile MVP 🟡 In Progress
+### Phase 3 — Mobile MVP 🟢 Complete
 
 - [x] Expo app shell with Expo Router (file-based routing under `apps/mobile/app/`)
 - [x] Reuse `packages/shared` query hooks (`useLineup` etc.)
 - [x] AsyncStorage-persisted query cache (see [ADR-007](DECISIONS.md))
 - [x] Lineup browse, search, day/area filter, favourites screens
-- [ ] Verified on iOS / Android simulator
-- [ ] EAS preview build
+- [x] Verified on iOS simulator (iPhone 17 Pro / iOS 26.3) via Expo dev client + Metro
+- [ ] EAS preview build (deferred — not blocking ongoing development)
 
-### Phase 4 — Spotify + Artist Pages 🔴 Not Started
+### Phase 4 — Spotify + Artist Pages 🟢 Complete
 
-- [ ] `/artists/:slug` and `/artists/:slug/spotify` endpoints
-- [ ] Artist detail screen with embed + deep-link
-- [ ] Offline fallback (cached metadata + deep-link)
+- [x] `/artists/:slug` lazy-resolves via Spotify Client Credentials and caches to DDB (30-day TTL)
+- [x] Web artist detail page (`/artists/:slug`) with Spotify embed iframe + deep-link
+- [x] Mobile artist detail screen (`app/artists/[slug].tsx`) with image + Spotify deep-link
+- [x] Offline fallback (cached metadata + deep-link; embed-only when API top-tracks blocked)
+- [x] PerformanceCards link title → artist page on web + mobile
 
-### Phase 5 — Map + Walking Times 🔴 Not Started
+### Phase 5 — Map + Walking Times 🟡 In Progress
 
-- [ ] Mapbox custom style
-- [ ] Stage pins on web + mobile
-- [ ] Walking time estimates between favourites
-- [ ] Web Service Worker tile cache + mobile offline pack
+- [x] Mapbox `outdoors-v12` style (custom style deferred — outdoors-v12 reads well at zoom 14-18)
+- [x] Stage pins on web (Mapbox GL JS, lazy-loaded) + mobile (`@rnmapbox/maps@10.2.10`)
+- [x] Walking time estimates between consecutive favourites within a day (great-circle × 1.4 ÷ 5 km/h)
+- [x] Web Service Worker raises Workbox precache limit to 4MB so the Mapbox chunk is precached
+- [ ] Mobile native `@rnmapbox/maps` rebuild via `eas build --profile development` (untested in simulator until then)
+- [ ] Mobile offline tile pack (`OfflineManager.createPack` for Worthy Farm bbox, zoom 13–18)
 
 ### Phase 6 — Cognito + Sync 🔴 Not Started
 

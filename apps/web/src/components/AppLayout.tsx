@@ -30,6 +30,12 @@ export const AppLayout = () => {
               </NavLink>
             ))}
             <NavLink
+              to="/map"
+              className={({ isActive }) => `chip ${isActive ? 'chip-active' : ''}`}
+            >
+              Map
+            </NavLink>
+            <NavLink
               to="/favourites"
               className={({ isActive }) => `chip ${isActive ? 'chip-active' : ''}`}
             >

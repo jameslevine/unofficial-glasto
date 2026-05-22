@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { useQueries } from '@tanstack/react-query';
-import { lineupQueryKey } from '@glasto/shared';
-import type { Performance } from '@glasto/shared';
+import { lineupQueryKey, useStages, walkingMinutes } from '@glasto/shared';
+import type { Performance, Stage } from '@glasto/shared';
 import { api } from '../../lib/api';
 import { useFavourites } from '../../store/favourites';
 import { PerformanceCard } from './PerformanceCard';
@@ -32,6 +32,20 @@ export const FavouritesPage = () => {
   const grouped = useMemo(() => groupByDay(favourites), [favourites]);
   const isLoading = queries.some((q) => q.isPending);
   const favCount = Object.keys(ids).length;
+  const { data: stages } = useStages(api);
+  const stageBySlug = useMemo(() => {
+    const map = new Map<string, Stage>();
+    stages?.forEach((s) => {
+      const norm = s.name.toLowerCase().replace(/\s+/g, '-');
+      map.set(s.slug, s);
+      map.set(norm, s);
+    });
+    return map;
+  }, [stages]);
+  const findStage = (perf: Performance): Stage | undefined => {
+    const norm = perf.stage.toLowerCase().replace(/\s+/g, '-');
+    return stageBySlug.get(norm);
+  };
 
   return (
     <div className="space-y-6">
@@ -58,12 +72,29 @@ export const FavouritesPage = () => {
           {grouped.map(([day, items]) => (
             <section key={day} className="space-y-3">
               <h2 className="font-display text-xl font-semibold">{formatDay(day)}</h2>
-              <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                {items.map((p) => (
-                  <li key={p.id}>
-                    <PerformanceCard performance={p} />
-                  </li>
-                ))}
+              <ul className="space-y-3">
+                {items.map((p, i) => {
+                  const prev = items[i - 1];
+                  const fromStage = prev ? findStage(prev) : undefined;
+                  const toStage = findStage(p);
+                  const minutes =
+                    prev && fromStage?.lat != null && toStage?.lat != null
+                      ? walkingMinutes(
+                          { lat: fromStage.lat, lon: fromStage.lon as number },
+                          { lat: toStage.lat, lon: toStage.lon as number },
+                        )
+                      : null;
+                  return (
+                    <li key={p.id} className="space-y-2">
+                      {minutes !== null && minutes > 0 && (
+                        <p className="pl-3 text-xs text-muted">
+                          ↳ ~{minutes} min walk from {prev?.stage}
+                        </p>
+                      )}
+                      <PerformanceCard performance={p} />
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           ))}

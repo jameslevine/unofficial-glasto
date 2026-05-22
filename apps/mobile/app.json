@@ -22,12 +22,21 @@
       "bundler": "metro",
       "output": "static"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      [
+        "@rnmapbox/maps",
+        {
+          "RNMapboxMapsImpl": "mapbox"
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
       "apiBaseUrl": "https://0pmdeq1cnb.execute-api.us-east-1.amazonaws.com/Prod",
+      "mapboxToken": "pk.eyJ1IjoiamFtZXNsZXZpbmUiLCJhIjoiY21wZ3hkaDVzMHMwMDJyczJocTc4cWY4dyJ9.NXJgwMNHgc1ScJUxIIL04w",
       "eas": {
         "projectId": "5d3c1529-831b-4aea-8193-6693673a7e0e"
       }
