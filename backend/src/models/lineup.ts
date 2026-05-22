@@ -19,3 +19,16 @@ export const favouriteBodySchema = Joi.object({
   perfId: Joi.string().max(160).required(),
   updatedAt: Joi.string().isoDate().required(),
 });
+
+export const syncBodySchema = Joi.object({
+  favourites: Joi.array()
+    .items(
+      Joi.object({
+        perfId: Joi.string().max(160).required(),
+        updatedAt: Joi.string().isoDate().required(),
+        deleted: Joi.boolean().optional(),
+      }),
+    )
+    .max(2000)
+    .required(),
+});

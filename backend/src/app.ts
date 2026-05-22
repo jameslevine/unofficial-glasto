@@ -2,7 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import { artistsRouter } from './routes/artists.js';
 import { errorHandler } from './middleware/error-handler.js';
-import { favouritesRouter } from './routes/favourites.js';
+import { favouritesRouter, syncRouter } from './routes/favourites.js';
 import { lineupRouter, stagesRouter } from './routes/lineup.js';
 
 export const createApp = () => {
@@ -23,6 +23,7 @@ export const createApp = () => {
   app.use('/v1/stages', stagesRouter);
   app.use('/v1/artists', artistsRouter);
   app.use('/v1/me/favourites', favouritesRouter);
+  app.use('/v1/me/sync', syncRouter);
 
   app.use(errorHandler);
   return app;

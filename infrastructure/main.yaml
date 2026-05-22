@@ -10,12 +10,6 @@ Parameters:
   ScraperSchedule:
     Type: String
     Default: 'rate(24 hours)'
-  CognitoUserPoolId:
-    Type: String
-    Default: ''
-  CognitoClientId:
-    Type: String
-    Default: ''
   SpotifyClientId:
     Type: String
     NoEcho: true
@@ -35,6 +29,77 @@ Globals:
         NODE_OPTIONS: --enable-source-maps
 
 Resources:
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub glasto-${Environment}
+      AutoVerifiedAttributes:
+        - email
+      UsernameAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 10
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+          RequireUppercase: true
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      MfaConfiguration: 'OFF'
+      UserPoolAddOns:
+        AdvancedSecurityMode: AUDIT
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Required: true
+          Mutable: true
+
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: !Sub glasto-web-${Environment}
+      UserPoolId: !Ref UserPool
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      PreventUserExistenceErrors: ENABLED
+      SupportedIdentityProviders:
+        - COGNITO
+      AllowedOAuthFlowsUserPoolClient: true
+      AllowedOAuthFlows:
+        - code
+      AllowedOAuthScopes:
+        - email
+        - openid
+        - profile
+      CallbackURLs:
+        - http://localhost:5173/auth/callback
+        - https://d5zgsiw27b3ju.cloudfront.net/auth/callback
+        - glasto://auth/callback
+      LogoutURLs:
+        - http://localhost:5173/
+        - https://d5zgsiw27b3ju.cloudfront.net/
+        - glasto://
+      AccessTokenValidity: 1
+      IdTokenValidity: 1
+      RefreshTokenValidity: 30
+      TokenValidityUnits:
+        AccessToken: hours
+        IdToken: hours
+        RefreshToken: days
+
+  UserPoolDomain:
+    Type: AWS::Cognito::UserPoolDomain
+    Properties:
+      Domain: !Sub glasto-${Environment}-${AWS::AccountId}
+      UserPoolId: !Ref UserPool
+
   Table:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -88,8 +153,8 @@ Resources:
       Environment:
         Variables:
           TABLE_NAME: !Ref Table
-          COGNITO_USER_POOL_ID: !Ref CognitoUserPoolId
-          COGNITO_CLIENT_ID: !Ref CognitoClientId
+          COGNITO_USER_POOL_ID: !Ref UserPool
+          COGNITO_CLIENT_ID: !Ref UserPoolClient
           SPOTIFY_CLIENT_ID: !Ref SpotifyClientId
           SPOTIFY_CLIENT_SECRET: !Ref SpotifyClientSecret
       Policies:
@@ -288,3 +353,12 @@ Outputs:
   WebUrl:
     Description: CloudFront URL
     Value: !Sub https://${WebDistribution.DomainName}
+  UserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref UserPool
+  UserPoolClientId:
+    Description: Cognito User Pool client ID (web/mobile)
+    Value: !Ref UserPoolClient
+  UserPoolDomain:
+    Description: Cognito Hosted UI domain
+    Value: !Sub https://${UserPoolDomain}.auth.${AWS::Region}.amazoncognito.com
