@@ -2,9 +2,9 @@
 
 ## 🔵 Current Task
 
-- **Task:** Phase 3 — Mobile MVP (Expo app shell)
-- **Started:** 2026-05-21
-- **Context:** Bundling chain green: Metro bundles `index.js (1038 modules)` cleanly and `expo export --platform web` exports all 5 routes. Fixes landed for monorepo babel resolution (expo-router-plugin), shared-package `.js` ESM imports, single-React enforcement, and react-native version pinning across workspaces. Outstanding: the iOS 26.3 simulator only has Expo Go 2.31.6 (built against iOS 17 SDK), which crashes at runtime with `useId of null` in `withDevTools` — independent of our code, since the bundle is valid. Path forward is an EAS development build against iOS 26 (skips Expo Go entirely).
+- **Task:** Phase 3 — EAS preview build for iOS
+- **Started:** 2026-05-22
+- **Context:** Mobile MVP runs end-to-end on the iPhone 17 Pro simulator (iOS 26.3) via Expo Go: lineup renders ~4k performances responsively, search/filters are instant, favouriting works, favourites persist across reopens, and unfavouriting drops from the list. Earlier `useId of null` runtime crash turned out to also be a perf issue — switching the lineup ScrollView to a virtualized SectionList unblocked it. Now needs an EAS preview build for device testing + TestFlight path.
 
 ## ✅ Completed Tasks
 
@@ -28,13 +28,14 @@
 | 2026-05-21 | Deployed web to <https://d5zgsiw27b3ju.cloudfront.net>                                   | Smoke-tested deep links + manifest + sw.js — all 200             |
 | 2026-05-21 | Scaffolded `apps/mobile` (Expo SDK 51 + Expo Router + TS) sharing `@glasto/shared`       | Lineup browse/search/filters/favourites; AsyncStorage cache      |
 | 2026-05-21 | Logged ADR-007: AsyncStorage (not SQLite) for the mobile query cache                     | Matches TanStack Query persist API; swap to MMKV later if needed |
+| 2026-05-22 | Got the mobile bundle running in Expo Go on iOS 26.3                                     | babel/metro/version-dedup fixes landed; smoke test green         |
+| 2026-05-22 | Virtualized lineup screen with SectionList (was unvirtualized ScrollView over ~4k items) | Memoized PerformanceCard on id; search and filters now instant   |
 
 ## 🔴 Blocked / Pending
 
-- **iOS/Android simulator smoke test** — code is type/lint clean and the bundler config is monorepo-aware, but I haven't booted the app on a device yet. Run `npm run dev:mobile` and press `i` (iOS) or `a` (Android).
+- _(none)_
 
 ## ⏭️ Next Up
 
-1. Boot the app on the iOS simulator and verify lineup loads + favourites persist across reloads
-2. EAS preview build (`eas build --profile preview --platform ios`)
-3. Phase 4 — Spotify proxy + artist pages
+1. EAS preview build (`eas build --profile preview --platform ios`) for device + TestFlight
+2. Phase 4 — Spotify proxy + artist pages
