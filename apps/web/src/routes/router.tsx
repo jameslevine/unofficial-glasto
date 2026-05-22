@@ -4,6 +4,7 @@ import { AppLayout } from '../components/AppLayout';
 import { LineupPage } from '../features/lineup/LineupPage';
 import { FavouritesPage } from '../features/lineup/FavouritesPage';
 import { ArtistPage } from '../features/artists/ArtistPage';
+import { AuthCallbackPage } from '../features/auth/AuthCallbackPage';
 
 const MapPage = lazy(() => import('../features/map/MapPage').then((m) => ({ default: m.MapPage })));
 
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
       { path: 'favourites', element: <FavouritesPage /> },
       { path: 'artists/:slug', element: <ArtistPage /> },
       { path: 'map', element: <MapRoute /> },
+      { path: 'auth/callback', element: <AuthCallbackPage /> },
       { path: '*', element: <Navigate to="/lineup/2024" replace /> },
     ],
   },

@@ -1,10 +1,17 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useOnline } from '../hooks/useOnline';
+import { useAuth } from '../hooks/useAuth';
+import { useFavouritesSync } from '../hooks/useFavouritesSync';
+import { beginSignIn, isAuthConfigured, signOut } from '../lib/auth';
 
 const YEARS = [2025, 2024, 2023, 2022] as const;
 
 export const AppLayout = () => {
   const online = useOnline();
+  const signedIn = useAuth();
+  const authReady = isAuthConfigured();
+  const location = useLocation();
+  useFavouritesSync();
   return (
     <div className="min-h-full">
       <header className="sticky top-0 z-10 border-b border-border bg-bg/90 backdrop-blur">
@@ -41,6 +48,20 @@ export const AppLayout = () => {
             >
               ★ Favourites
             </NavLink>
+            {authReady &&
+              (signedIn ? (
+                <button type="button" className="chip" onClick={() => signOut()}>
+                  Sign out
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  className="chip"
+                  onClick={() => beginSignIn(location.pathname + location.search)}
+                >
+                  Sign in
+                </button>
+              ))}
           </nav>
         </div>
       </header>

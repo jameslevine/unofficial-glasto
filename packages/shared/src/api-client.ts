@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Artist, ApiError, Performance, Stage } from './types/index.js';
+import { Artist, ApiError, Favourite, Performance, Stage } from './types/index.js';
 
 export interface ApiClientOptions {
   baseUrl: string;
@@ -48,6 +48,13 @@ export const createApiClient = (opts: ApiClientOptions) => {
       const qs = name ? `?name=${encodeURIComponent(name)}` : '';
       return request(`/artists/${slug}${qs}`, Artist);
     },
+    listFavourites: () => request('/me/favourites', z.array(Favourite)),
+    syncFavourites: (favourites: Array<{ perfId: string; updatedAt: string; deleted?: boolean }>) =>
+      request('/me/sync', z.array(Favourite), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ favourites }),
+      }),
   };
 };
 
