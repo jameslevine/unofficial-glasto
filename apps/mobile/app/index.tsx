@@ -1,12 +1,29 @@
 import { Link } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { colors, radii, spacing } from '../src/lib/theme';
+import { useCognitoAuth } from '../src/hooks/useCognitoAuth';
+import { useFavouritesSync } from '../src/hooks/useFavouritesSync';
+import { isAuthConfigured } from '../src/lib/auth';
 
 const YEARS = [2025, 2024, 2023, 2022] as const;
 
 export default function HomeScreen() {
+  const auth = useCognitoAuth();
+  useFavouritesSync(auth.signedIn);
+  const showAuth = isAuthConfigured();
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {showAuth && (
+        <Pressable
+          style={styles.authBtn}
+          onPress={auth.signedIn ? auth.signOut : auth.signIn}
+          disabled={auth.loading}
+        >
+          <Text style={styles.authLabel}>
+            {auth.loading ? '…' : auth.signedIn ? 'Sign out' : 'Sign in'}
+          </Text>
+        </Pressable>
+      )}
       <Text style={styles.heading}>Pick a year</Text>
       <View style={styles.grid}>
         {YEARS.map((y) => (
@@ -69,4 +86,14 @@ const styles = StyleSheet.create({
   },
   actionLabel: { color: colors.fg, fontSize: 15, fontWeight: '600' },
   footer: { color: colors.muted, fontSize: 12, lineHeight: 18, marginTop: spacing.lg },
+  authBtn: {
+    alignSelf: 'flex-end',
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  authLabel: { color: colors.fg, fontSize: 13, fontWeight: '600' },
 });

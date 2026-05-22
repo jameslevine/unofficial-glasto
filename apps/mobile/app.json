@@ -29,7 +29,8 @@
         {
           "RNMapboxMapsImpl": "mapbox"
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
@@ -37,6 +38,8 @@
     "extra": {
       "apiBaseUrl": "https://0pmdeq1cnb.execute-api.us-east-1.amazonaws.com/Prod",
       "mapboxToken": "pk.eyJ1IjoiamFtZXNsZXZpbmUiLCJhIjoiY21wZ3hkaDVzMHMwMDJyczJocTc4cWY4dyJ9.NXJgwMNHgc1ScJUxIIL04w",
+      "cognitoDomain": "https://glasto-dev-563146874500.auth.us-east-1.amazoncognito.com",
+      "cognitoClientId": "16l759kk9thafvd1bt563ju1k7",
       "eas": {
         "projectId": "5d3c1529-831b-4aea-8193-6693673a7e0e"
       }
