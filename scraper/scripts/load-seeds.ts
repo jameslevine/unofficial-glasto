@@ -1,8 +1,8 @@
 import { readFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import type { Performance, Stage } from '@glasto/shared';
-import { upsertPerformances, upsertStages } from '../src/upsert.js';
+import type { Performance, Poi, Stage } from '@glasto/shared';
+import { upsertPerformances, upsertPois, upsertStages } from '../src/upsert.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, '..');
@@ -25,6 +25,22 @@ const main = async () => {
     ) as Performance[];
     const written = await upsertPerformances(perfs);
     console.info(`${year}: wrote ${written}`);
+  }
+
+  // POIs are year-keyed and only have 2025 data right now; loader is permissive.
+  const poiYears: number[] = [2025];
+  for (const year of poiYears) {
+    try {
+      const pois = JSON.parse(
+        readFileSync(resolve(root, 'seed/pois', `${year}.json`), 'utf8'),
+      ) as Poi[];
+      const written = await upsertPois(pois);
+      console.info(`pois ${year}: wrote ${written}`);
+    } catch (err) {
+      console.warn(
+        `pois ${year}: skipped (${(err as Error).message}). Run \`npm run build:pois\` first.`,
+      );
+    }
   }
 };
 

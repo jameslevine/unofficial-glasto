@@ -1,0 +1,85 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "DeafZone",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.581486,
+                    51.153402
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "DeafZone",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.585742,
+                    51.151559
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "DeafZone",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.589571,
+                    51.15169
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "DeafZone",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.583981,
+                    51.155002
+                ]
+            }
+        }
+    ]
+}

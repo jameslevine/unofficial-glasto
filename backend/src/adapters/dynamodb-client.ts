@@ -20,4 +20,5 @@ export const keys = {
   artistPK: (slug: string) => `ARTIST#${slug}`,
   userPK: (sub: string) => `USER#${sub}`,
   favSK: (perfId: string) => `FAV#${perfId}`,
+  poiPK: (year: number) => `POI#${year}`,
 };

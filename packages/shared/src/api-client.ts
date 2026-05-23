@@ -1,5 +1,13 @@
 import { z } from 'zod';
-import { Artist, ArtistSummary, ApiError, Favourite, Performance, Stage } from './types/index.js';
+import {
+  Artist,
+  ArtistSummary,
+  ApiError,
+  Favourite,
+  Performance,
+  Poi,
+  Stage,
+} from './types/index.js';
 
 export interface ApiClientOptions {
   baseUrl: string;
@@ -50,6 +58,7 @@ export const createApiClient = (opts: ApiClientOptions) => {
     },
     getArtistSummary: (year: number) =>
       request(`/artists/summary?year=${year}`, z.array(ArtistSummary)),
+    getPois: (year: number) => request(`/poi?year=${year}`, z.array(Poi)),
     listFavourites: () => request('/me/favourites', z.array(Favourite)),
     syncFavourites: (favourites: Array<{ perfId: string; updatedAt: string; deleted?: boolean }>) =>
       request('/me/sync', z.array(Favourite), {

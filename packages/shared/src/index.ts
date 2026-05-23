@@ -6,3 +6,4 @@ export * from './audio/pick-preview-track.js';
 export * from './schedule/build-schedule.js';
 export * from './schedule/now-next.js';
 export * from './ics/build-ics.js';
+export * from './poi/categories.js';

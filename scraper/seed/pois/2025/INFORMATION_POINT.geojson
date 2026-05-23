@@ -1,0 +1,215 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Information Point",
+                "description": "Free suncream is available from this location.\u200b",
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.587725,
+                    51.141874
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Information",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.60646,
+                    51.148058
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Information Point",
+                "description": "Free suncream is available from this location.\u200b",
+                "tags": [
+                    "Free WiFI"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.583413,
+                    51.148454
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Information Point",
+                "description": "Free suncream is available from this location.\u200b",
+                "tags": [
+                    "Free WiFI"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.586792,
+                    51.152031
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Information Point",
+                "description": "Free suncream is available from this location.\u200b",
+                "tags": [
+                    "Free WiFI"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.589768,
+                    51.155734
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Information",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.590295,
+                    51.140276
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Information Point",
+                "description": "Free suncream is available from this location.\u200b",
+                "tags": [
+                    "Free WiFI"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.597342,
+                    51.159109
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Travel Enquiries",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.599803,
+                    51.159795
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Information",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.602114,
+                    51.152246
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Information Point",
+                "description": "Free suncream is available from this location.\u200b",
+                "tags": [
+                    "Free WiFI"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.581501,
+                    51.153522
+                ]
+            }
+        }
+    ]
+}

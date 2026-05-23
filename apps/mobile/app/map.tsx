@@ -1,8 +1,15 @@
-import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import Mapbox, { Camera, MapView, MarkerView } from '@rnmapbox/maps';
-import { useStages } from '@glasto/shared';
+import {
+  POI_CATEGORY_META,
+  POI_CATEGORY_ORDER,
+  type PoiCategory,
+  usePois,
+  useStages,
+} from '@glasto/shared';
 import { api } from '../src/lib/api';
 import { colors, radii, spacing } from '../src/lib/theme';
 
@@ -14,21 +21,67 @@ const WORTHY_FARM_BOUNDS: [[number, number], [number, number]] = [
   [-2.55, 51.18],
   [-2.62, 51.13],
 ];
+const POI_YEAR = 2025;
+const STORAGE_KEY = 'map.activePoiLayers';
 
 if (TOKEN) Mapbox.setAccessToken(TOKEN);
 
 type PackStatus = 'idle' | 'checking' | 'downloading' | 'done' | 'error';
 
+interface SelectedFeature {
+  kind: 'stage' | 'poi';
+  id: string;
+  name: string;
+  subtitle: string;
+}
+
+const defaultActiveLayers = (): PoiCategory[] =>
+  POI_CATEGORY_ORDER.filter((c) => POI_CATEGORY_META[c].defaultOn);
+
 export default function MapScreen() {
   const { data: stages, isLoading } = useStages(api);
-  const [selected, setSelected] = useState<string | null>(null);
+  const { data: pois } = usePois(api, POI_YEAR);
+  const [selected, setSelected] = useState<SelectedFeature | null>(null);
   const [packStatus, setPackStatus] = useState<PackStatus>('idle');
   const [packProgress, setPackProgress] = useState(0);
   const [packError, setPackError] = useState<string | null>(null);
+  const [activeLayers, setActiveLayers] = useState<Set<PoiCategory>>(
+    () => new Set(defaultActiveLayers()),
+  );
 
   useEffect(() => {
     Mapbox.setTelemetryEnabled(false);
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const raw = await AsyncStorage.getItem(STORAGE_KEY);
+        if (cancelled || !raw) return;
+        const parsed = JSON.parse(raw) as string[];
+        setActiveLayers(new Set(parsed.filter((c): c is PoiCategory => c in POI_CATEGORY_META)));
+      } catch {
+        // keep defaults
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    void AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([...activeLayers]));
+  }, [activeLayers]);
+
+  const toggleLayer = (cat: PoiCategory) => {
+    setActiveLayers((prev) => {
+      const next = new Set(prev);
+      if (next.has(cat)) next.delete(cat);
+      else next.add(cat);
+      return next;
+    });
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -92,6 +145,19 @@ export default function MapScreen() {
     }
   };
 
+  const counts = useMemo<Partial<Record<PoiCategory, number>>>(() => {
+    const out: Partial<Record<PoiCategory, number>> = {};
+    (pois ?? []).forEach((p) => {
+      out[p.category] = (out[p.category] ?? 0) + 1;
+    });
+    return out;
+  }, [pois]);
+
+  const visiblePois = useMemo(
+    () => (pois ?? []).filter((p) => activeLayers.has(p.category)),
+    [pois, activeLayers],
+  );
+
   if (!TOKEN) {
     return (
       <View style={styles.center}>
@@ -103,29 +169,77 @@ export default function MapScreen() {
   }
 
   const pinned = (stages ?? []).filter((s) => s.lat != null && s.lon != null);
-  const selectedStage = pinned.find((s) => s.slug === selected);
 
   return (
     <View style={styles.root}>
-      <MapView style={styles.map} styleURL="mapbox://styles/mapbox/outdoors-v12" logoEnabled>
+      <MapView style={styles.map} styleURL={STYLE_URL} logoEnabled>
         <Camera defaultSettings={{ centerCoordinate: SITE_CENTER, zoomLevel: 13.5 }} />
+
         {pinned.map((s) => (
           <MarkerView
-            key={s.slug}
+            key={`stage-${s.slug}`}
             coordinate={[s.lon as number, s.lat as number]}
             anchor={{ x: 0.5, y: 0.5 }}
           >
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={`Stage ${s.name}`}
-              onPress={() => setSelected(s.slug)}
+              onPress={() =>
+                setSelected({ kind: 'stage', id: s.slug, name: s.name, subtitle: s.area })
+              }
               style={styles.pin}
             >
               <Text style={styles.pinText}>{s.name}</Text>
             </Pressable>
           </MarkerView>
         ))}
+
+        {visiblePois.map((p) => {
+          const meta = POI_CATEGORY_META[p.category];
+          return (
+            <MarkerView key={`poi-${p.id}`} coordinate={[p.lon, p.lat]} anchor={{ x: 0.5, y: 0.5 }}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`${meta.label}: ${p.name}`}
+                onPress={() =>
+                  setSelected({ kind: 'poi', id: p.id, name: p.name, subtitle: meta.label })
+                }
+                style={[styles.poiPin, { backgroundColor: meta.color }]}
+              >
+                <Text style={styles.poiPinText}>{meta.icon}</Text>
+              </Pressable>
+            </MarkerView>
+          );
+        })}
       </MapView>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.layerRow}
+        contentContainerStyle={styles.layerRowContent}
+        accessibilityLabel="Map layers"
+      >
+        {POI_CATEGORY_ORDER.map((cat) => {
+          const meta = POI_CATEGORY_META[cat];
+          const active = activeLayers.has(cat);
+          const count = counts[cat] ?? 0;
+          if (count === 0) return null;
+          return (
+            <Pressable
+              key={cat}
+              accessibilityRole="button"
+              accessibilityState={{ selected: active }}
+              onPress={() => toggleLayer(cat)}
+              style={[styles.chip, active && styles.chipActive]}
+            >
+              <Text style={[styles.chipText, active && styles.chipTextActive]}>
+                {meta.icon} {meta.label} {count}
+              </Text>
+            </Pressable>
+          );
+        })}
+      </ScrollView>
 
       {isLoading && (
         <View style={styles.loadingBadge}>
@@ -157,10 +271,10 @@ export default function MapScreen() {
         </View>
       )}
 
-      {selectedStage && (
+      {selected && (
         <View style={styles.callout}>
           <View style={styles.calloutHeader}>
-            <Text style={styles.calloutTitle}>{selectedStage.name}</Text>
+            <Text style={styles.calloutTitle}>{selected.name}</Text>
             <Text
               accessibilityRole="button"
               accessibilityLabel="Close"
@@ -170,7 +284,7 @@ export default function MapScreen() {
               ✕
             </Text>
           </View>
-          <Text style={styles.calloutMeta}>{selectedStage.area}</Text>
+          <Text style={styles.calloutMeta}>{selected.subtitle}</Text>
         </View>
       )}
     </View>
@@ -195,6 +309,52 @@ const styles = StyleSheet.create({
     color: colors.brand,
     fontSize: 11,
     fontWeight: '700',
+  },
+  poiPin: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.9)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  poiPinText: {
+    fontSize: 14,
+    color: '#fff',
+  },
+  layerRow: {
+    position: 'absolute',
+    bottom: spacing.md + 60,
+    left: 0,
+    right: 0,
+    maxHeight: 36,
+  },
+  layerRowContent: {
+    paddingHorizontal: spacing.md,
+    gap: spacing.sm,
+    alignItems: 'center',
+  },
+  chip: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: radii.full,
+    backgroundColor: colors.surface,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    marginRight: spacing.sm,
+  },
+  chipActive: {
+    backgroundColor: colors.brand,
+    borderColor: colors.brand,
+  },
+  chipText: {
+    color: colors.fg,
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  chipTextActive: {
+    color: colors.bg,
   },
   loadingBadge: {
     position: 'absolute',

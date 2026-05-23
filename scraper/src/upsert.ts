@@ -1,6 +1,6 @@
 import { BatchWriteCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import type { Artist, Performance, Stage } from '@glasto/shared';
+import type { Artist, Performance, Poi, Stage } from '@glasto/shared';
 
 const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}), {
   marshallOptions: { removeUndefinedValues: true },
@@ -56,6 +56,20 @@ export const upsertStages = async (stages: Stage[]): Promise<number> => {
   }));
   await flushBatches(items);
   return stages.length;
+};
+
+export const upsertPois = async (pois: Poi[]): Promise<number> => {
+  const items: PutItem[] = pois.map((p) => ({
+    PutRequest: {
+      Item: {
+        ...p,
+        PK: `POI#${p.year}`,
+        SK: `POI#${p.category}#${p.id}`,
+      },
+    },
+  }));
+  await flushBatches(items);
+  return pois.length;
 };
 
 export const upsertArtists = async (artists: Artist[]): Promise<number> => {

@@ -1,0 +1,65 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Worthy Rest",
+                "description": "Places where anyone can go if they need some time away from it all",
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.59095,
+                    51.145766
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Worthy Rest",
+                "description": "Places where anyone can go if they need some time away from it all",
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.593502,
+                    51.155607
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Worthy Rest",
+                "description": "Places where anyone can go if they need some time away from it all",
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.578439,
+                    51.157673
+                ]
+            }
+        }
+    ]
+}

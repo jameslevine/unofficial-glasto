@@ -1,0 +1,125 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Accessible Bus Stop",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.601537,
+                    51.1607
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Accessible Bus Stop - Arcadia",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.593972,
+                    51.147767
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Accessible Bus Stop",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.589744,
+                    51.159143
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Accessible Bus Stop - Park Home Ground",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.594099,
+                    51.151676
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Accessible Bus Stop - The Common",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.576935,
+                    51.146394
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Accessible Bus Stop - Theatre & Circus - Orchard Gate",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.577982,
+                    51.14938
+                ]
+            }
+        }
+    ]
+}

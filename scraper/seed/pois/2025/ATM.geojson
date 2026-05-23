@@ -1,0 +1,65 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "ATM",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.583891,
+                    51.150651
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "ATM",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.588847,
+                    51.148128
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "ATM",
+                "description": null,
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.580565,
+                    51.157838
+                ]
+            }
+        }
+    ]
+}

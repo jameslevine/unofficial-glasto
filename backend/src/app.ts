@@ -4,6 +4,7 @@ import { artistsRouter } from './routes/artists.js';
 import { errorHandler } from './middleware/error-handler.js';
 import { favouritesRouter, syncRouter } from './routes/favourites.js';
 import { lineupRouter, stagesRouter } from './routes/lineup.js';
+import { poiRouter } from './routes/poi.js';
 
 export const createApp = () => {
   const app = express();
@@ -22,6 +23,7 @@ export const createApp = () => {
   app.use('/v1/lineup', lineupRouter);
   app.use('/v1/stages', stagesRouter);
   app.use('/v1/artists', artistsRouter);
+  app.use('/v1/poi', poiRouter);
   app.use('/v1/me/favourites', favouritesRouter);
   app.use('/v1/me/sync', syncRouter);
 

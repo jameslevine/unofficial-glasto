@@ -56,6 +56,55 @@ export const Stage = z.object({
 });
 export type Stage = z.infer<typeof Stage>;
 
+export const PoiCategory = z.enum([
+  'AED',
+  'AREA',
+  'ATM',
+  'BAR',
+  'BUS_STOP',
+  'CAMPING',
+  'CAMPING_SHOP',
+  'CAMPSITE_STEWARDS',
+  'CHARITY_PARTNER',
+  'DEAF_ZONE',
+  'FOOD',
+  'INDUCTION_LOOP_SYSTEM',
+  'INFORMATION_POINT',
+  'LANDMARK',
+  'LOST_PROPERTY',
+  'MARKET_CLUSTER_LABEL',
+  'MEDICAL_CENTRE',
+  'OFFICIAL_MERCHANDISE',
+  'PARKING',
+  'PHARMACY',
+  'PROPERTY_LOCKUP',
+  'SENSORY_CALM_SPACE',
+  'SHOP',
+  'SITE_ENTRANCES_AND_EXITS',
+  'STAGE',
+  'TOILET',
+  'VIEWING_PLATFORM',
+  'VODAFONE_CONNECT_AND_CHARGE',
+  'VODAFONE_CONNECT_AND_CHARGE_SATELLITE',
+  'WATER',
+  'WELFARE',
+  'WHEELCHAIR_ACCESSIBLE_TOILET',
+  'WORTHY_REST',
+]);
+export type PoiCategory = z.infer<typeof PoiCategory>;
+
+export const Poi = z.object({
+  id: z.string(),
+  year: z.number().int().min(1970).max(2100),
+  category: PoiCategory,
+  name: z.string(),
+  description: z.string().nullable(),
+  tags: z.array(z.string()),
+  lat: z.number(),
+  lon: z.number(),
+});
+export type Poi = z.infer<typeof Poi>;
+
 export const ArtistSummary = z.object({
   slug: z.string(),
   genres: z.array(z.string()),

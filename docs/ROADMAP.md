@@ -111,8 +111,8 @@ WCAG 2.1 AA, perf budgets, and i18n scaffolding are now per-PR gates baked into 
 
 - [ ] Push notifications ("favourite starts in 15 min")
 - [x] Now/next pinning above the schedule when festival is live
-- [ ] Full POI map layer (toilets, food, water taps, first aid)
-- [ ] GPS routing to next favourite
+- [x] Full POI map layer — 1,107 POIs across 33 categories from `Jonty/glastonbury-app-data` 2025 dataset (toilets, water, food, medical, info, ATM, accessibility, …)
+- [ ] GPS routing to next favourite — planning doc at [`docs/PLAN_9_4_ROUTING.md`](PLAN_9_4_ROUTING.md); needs map georeferencing + path tracing before build
 - [ ] Battery saver mode
 - [ ] "My pin" for tent / meet-up
 

@@ -1,0 +1,247 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "AED",
+                "description": null,
+                "tags": [
+                    "Defibrillator"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.580977,
+                    51.150111
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "AED",
+                "description": null,
+                "tags": [
+                    "Defibrillator"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.581617,
+                    51.153421
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "AED",
+                "description": null,
+                "tags": [
+                    "Defibrillator"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.588992,
+                    51.159082
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "AED",
+                "description": null,
+                "tags": [
+                    "Defibrillator"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.581011,
+                    51.159072
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "AED",
+                "description": null,
+                "tags": [
+                    "Defibrillator"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.586416,
+                    51.155924
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "AED",
+                "description": null,
+                "tags": [
+                    "Defibrillator"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.593361,
+                    51.145955
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "AED",
+                "description": null,
+                "tags": [
+                    "Defibrillator"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.56907,
+                    51.149938
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "AED",
+                "description": null,
+                "tags": [
+                    "Defibrillator"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.58336,
+                    51.148015
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "AED",
+                "description": null,
+                "tags": [
+                    "Defibrillator"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.577615491,
+                    51.14585686
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "AED",
+                "description": null,
+                "tags": [
+                    "Defibrillator"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.603552,
+                    51.147974
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "AED",
+                "description": null,
+                "tags": [
+                    "Defibrillator"
+                ],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.584069,
+                    51.155032
+                ]
+            }
+        }
+    ]
+}

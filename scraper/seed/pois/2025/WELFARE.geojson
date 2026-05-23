@@ -1,0 +1,45 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Welfare",
+                "description": "This is the main centre for practical welfare support, which is open 24 hours a day throughout the Festival.",
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.583341,
+                    51.147878
+                ]
+            }
+        },
+        {
+            "type": "Feature",
+            "properties": {
+                "name": "Welfare",
+                "description": "This is the main centre for practical welfare support, which is open 24 hours a day throughout the Festival.",
+                "tags": [],
+                "is_in_market": false,
+                "is_busy": false,
+                "busy_title": null,
+                "busy_description": null,
+                "display_on_map": true
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [
+                    -2.578569,
+                    51.15769
+                ]
+            }
+        }
+    ]
+}
