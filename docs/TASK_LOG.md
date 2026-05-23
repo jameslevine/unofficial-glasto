@@ -2,9 +2,9 @@
 
 ## 🔵 Current Task
 
-- **Task:** Phase 8 — Planning Tool. Milestone M8.4 (.ics calendar export) complete; Phase 8 finished. Next: deploy backend + cut a release.
+- **Task:** Phase 8 deployed to dev. Next: rebuild EAS dev client + cut a release.
 - **Started:** 2026-05-22
-- **Context:** Phase 8 wraps with `.ics` export. Shared `buildIcs` emits RFC 5545 with Europe/London `VTIMEZONE` (BST/GMT) — CRLF endings, 75-octet line folding, TEXT escaping (`,;\` + newlines), `DTSTART;TZID=Europe/London` (local wall time, not UTC). Web ships `ExportButton` (per-page download) + `AddToCalendarButton` (per-row dropdown with `.ics` download or Google Calendar template link). Mobile uses `expo-file-system` to write to cacheDir then `expo-sharing.shareAsync` with `text/calendar` MIME + `com.apple.ical.ics` UTI; per-row 📅 button + per-page Export schedule. 34 vitest cases pass.
+- **Context:** Backend + web are live with Phase 8 features. `/v1/artists/summary?year=2024` returns the new shape (`{ slug, genres, previewUrl }`). Web bundle synced to S3 (`glasto-web-dev-563146874500`) and CloudFront invalidated (`IEKCJF0Q56Q0XCXQSY4JVUQPV9`). Two deploy snags resolved: (a) `pickPreviewTrack` was a runtime import from `@glasto/shared` that esbuild couldn't resolve from `backend/node_modules` — inlined a 6-line copy (types still imported as `import type` which esbuild erases). (b) `Schedule: !Ref ScraperSchedule` failed CFN with "Parameter ScheduleExpression is not valid" — direct `aws events put-rule rate(24 hours)` worked fine, so the parameter substitution was the issue; hardcoded `Schedule: rate(1 day)` in `main.yaml`.
 
 ## ✅ Completed Tasks
 
@@ -66,6 +66,7 @@
 | 2026-05-23 | M8.4 — shared `buildIcs` (RFC 5545 + Europe/London VTIMEZONE) + `buildGoogleCalendarUrl`           | 10 vitest cases: CRLF, fold ≤75 octets, TEXT escapes, BST/GMT rules  |
 | 2026-05-23 | M8.4 — web `ExportButton` (Blob download) + per-row `AddToCalendarButton` (.ics + Google fallback) | Click-outside dismiss; downloads via `URL.createObjectURL` + revoke  |
 | 2026-05-23 | M8.4 — mobile `lib/ics.ts` (expo-file-system + expo-sharing) + per-row 📅 + per-page Export        | `text/calendar` MIME + `com.apple.ical.ics` UTI for native handlers  |
+| 2026-05-23 | Deployed backend (`/v1/artists/summary` live) + web bundle to dev                                  | Inlined `pickPreviewTrack`; hardcoded `Schedule: rate(1 day)` in CFN |
 
 ## 🔴 Blocked / Pending
 
@@ -73,10 +74,9 @@
 
 ## ⏭️ Next Up
 
-1. Deploy backend so `/v1/artists/summary` is live; smoke-test against `?year=2024`
-2. Rebuild EAS dev client so `expo-av` + `expo-file-system` + `expo-sharing` are bundled before audio/.ics can be tested on simulator/device
-3. Cut a release after Phase 8 verification (web redeploy + EAS preview build)
-4. Phase 9 kickoff (push notifications, now/next pinning, full POI map layer)
-5. Smoke-test mobile auth + sync end-to-end on iOS sim
-6. Smoke-test mobile offline tile pack: download → airplane mode → reload `/map`
-7. Apply for Spotify Extended Quota Mode to restore `/top-tracks`
+1. Rebuild EAS dev client so `expo-av` + `expo-file-system` + `expo-sharing` are bundled before audio/.ics can be tested on simulator/device
+2. Cut a release after Phase 8 verification on deployed CloudFront site
+3. Phase 9 kickoff (push notifications, now/next pinning, full POI map layer)
+4. Smoke-test mobile auth + sync end-to-end on iOS sim
+5. Smoke-test mobile offline tile pack: download → airplane mode → reload `/map`
+6. Apply for Spotify Extended Quota Mode to restore `/top-tracks`

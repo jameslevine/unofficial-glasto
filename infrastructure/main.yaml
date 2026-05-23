@@ -196,7 +196,7 @@ Resources:
         Scheduled:
           Type: Schedule
           Properties:
-            Schedule: !Ref ScraperSchedule
+            Schedule: rate(1 day)
             Description: Re-scrape Glastonbury lineup
             Enabled: true
 

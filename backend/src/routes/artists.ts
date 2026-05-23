@@ -1,7 +1,15 @@
 import { Router } from 'express';
 import Joi from 'joi';
-import type { Artist, ArtistSummary } from '@glasto/shared';
-import { pickPreviewTrack } from '@glasto/shared';
+import type { Artist, ArtistSummary, SpotifyTrack } from '@glasto/shared';
+
+const pickPreviewTrack = (
+  artist: Pick<Artist, 'topTracks'> | null | undefined,
+): SpotifyTrack | null => {
+  for (const t of artist?.topTracks ?? []) {
+    if (t.previewUrl) return t;
+  }
+  return null;
+};
 import { getArtistBySlug, getArtistsBySlugs, putArtist } from '../adapters/dynamodb-artists.js';
 import { getLineupByYear } from '../adapters/dynamodb-lineup.js';
 import { getTopTracks, searchArtist } from '../lib/spotify-client.js';
