@@ -1,6 +1,6 @@
 import { useQueries } from '@tanstack/react-query';
 import { useMemo } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import type { ArtistSummary, Performance, Stage } from '@glasto/shared';
 import {
   artistSummaryQueryKey,
@@ -12,6 +12,7 @@ import {
 import { ScheduleRow } from '../src/components/ScheduleRow';
 import { api } from '../src/lib/api';
 import { formatDay } from '../src/lib/format';
+import { shareSchedule } from '../src/lib/ics';
 import { useFavourites } from '../src/store/favourites';
 import { colors, radii, spacing } from '../src/lib/theme';
 
@@ -82,6 +83,18 @@ export default function FavouritesScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
+      <View style={styles.exportRow}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Export schedule as calendar file"
+          onPress={() => {
+            void shareSchedule(favourites);
+          }}
+          style={({ pressed }) => [styles.exportBtn, pressed && styles.exportBtnPressed]}
+        >
+          <Text style={styles.exportLabel}>Export schedule</Text>
+        </Pressable>
+      </View>
       {days.map(({ day, items }) => (
         <View key={day} style={styles.daySection}>
           <Text style={styles.dayHeading}>{formatDay(day)}</Text>
@@ -137,6 +150,21 @@ const styles = StyleSheet.create({
   },
   heading: { color: colors.fg, fontSize: 18, fontWeight: '600' },
   muted: { color: colors.muted, fontSize: 14, textAlign: 'center' },
+  exportRow: {
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.md,
+    alignItems: 'flex-end',
+  },
+  exportBtn: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radii.full,
+    backgroundColor: colors.surface2,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+  },
+  exportBtnPressed: { opacity: 0.6 },
+  exportLabel: { color: colors.brand, fontSize: 13, fontWeight: '600' },
   daySection: { marginBottom: spacing.lg, paddingHorizontal: spacing.lg, gap: spacing.sm },
   dayHeading: { color: colors.fg, fontSize: 18, fontWeight: '600' },
   dayCard: {

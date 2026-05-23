@@ -4,6 +4,7 @@ import { artistSummaryQueryKey, lineupQueryKey, useStages } from '@glasto/shared
 import type { ArtistSummary, Performance } from '@glasto/shared';
 import { api } from '../../lib/api';
 import { useFavourites } from '../../store/favourites';
+import { ExportButton } from '../schedule/ExportButton';
 import { ScheduleTimeline } from '../schedule/ScheduleTimeline';
 
 const YEARS = [2025, 2024, 2023, 2022] as const;
@@ -58,9 +59,12 @@ export const FavouritesPage = () => {
           <p className="text-sm text-muted">{favCount} saved · stored locally on this device.</p>
         </div>
         {favCount > 0 && (
-          <button type="button" className="btn" onClick={clear}>
-            Clear all
-          </button>
+          <div className="flex items-center gap-2">
+            <ExportButton performances={favourites} />
+            <button type="button" className="btn" onClick={clear}>
+              Clear all
+            </button>
+          </div>
         )}
       </header>
 

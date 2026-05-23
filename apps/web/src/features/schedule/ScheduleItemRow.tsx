@@ -3,6 +3,7 @@ import type { ScheduleItem } from '@glasto/shared';
 import { useFavourites } from '../../store/favourites';
 import { PlayPreviewButton } from '../audio/PlayPreviewButton';
 import { formatTime } from '../lineup/utils';
+import { AddToCalendarButton } from './AddToCalendarButton';
 
 interface Props {
   item: ScheduleItem;
@@ -78,6 +79,7 @@ export const ScheduleItemRow = ({
               <time dateTime={performance.endsAt}>{formatTime(performance.endsAt)}</time>
             </p>
             <PlayPreviewButton id={performance.id} previewUrl={previewUrl} />
+            <AddToCalendarButton performance={performance} />
           </div>
           {inConflict && (
             <div

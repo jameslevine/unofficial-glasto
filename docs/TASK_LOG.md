@@ -2,9 +2,9 @@
 
 ## 🔵 Current Task
 
-- **Task:** Phase 8 — Planning Tool. Milestone M8.3 (audio preview) complete; M8.4 (.ics calendar export) is next.
+- **Task:** Phase 8 — Planning Tool. Milestone M8.4 (.ics calendar export) complete; Phase 8 finished. Next: deploy backend + cut a release.
 - **Started:** 2026-05-22
-- **Context:** New roadmap approved (Phase 8 detailed, Phase 9/10 outlined). Phase 7 (a11y/perf/i18n) is now baked into every Phase 8/9/10 PR as a Definition of Done gate rather than a standalone phase. M8.3 adds a global single-track audio preview: web `HTMLAudioElement` + mobile `expo-av` singletons fronted by a shared zustand store; ▶/❚❚ button on lineup cards, schedule rows, and artist pages; preview URLs come from the `useArtistSummary` cache so there are no per-card artist fetches. Mobile requires an EAS dev rebuild to pick up `expo-av` before audio is testable on simulator/device.
+- **Context:** Phase 8 wraps with `.ics` export. Shared `buildIcs` emits RFC 5545 with Europe/London `VTIMEZONE` (BST/GMT) — CRLF endings, 75-octet line folding, TEXT escaping (`,;\` + newlines), `DTSTART;TZID=Europe/London` (local wall time, not UTC). Web ships `ExportButton` (per-page download) + `AddToCalendarButton` (per-row dropdown with `.ics` download or Google Calendar template link). Mobile uses `expo-file-system` to write to cacheDir then `expo-sharing.shareAsync` with `text/calendar` MIME + `com.apple.ical.ics` UTI; per-row 📅 button + per-page Export schedule. 34 vitest cases pass.
 
 ## ✅ Completed Tasks
 
@@ -63,6 +63,9 @@
 | 2026-05-23 | M8.3 — mobile `useAudioPreview` zustand singleton wrapping `expo-av Audio.Sound`                   | Lazy `setAudioModeAsync`; AppState listener stops on background      |
 | 2026-05-23 | M8.3 — `PlayPreviewButton` (web + mobile) with ▶/❚❚ + 30s progress, hides when no `previewUrl`     | sm/md sizes; `aria-pressed`/`accessibilityState` for screen readers  |
 | 2026-05-23 | M8.3 — ▶ wired into web + mobile lineup cards, schedule rows, artist pages via `slugPreview` map   | No per-card artist fetches; preview URLs from `useArtistSummary`     |
+| 2026-05-23 | M8.4 — shared `buildIcs` (RFC 5545 + Europe/London VTIMEZONE) + `buildGoogleCalendarUrl`           | 10 vitest cases: CRLF, fold ≤75 octets, TEXT escapes, BST/GMT rules  |
+| 2026-05-23 | M8.4 — web `ExportButton` (Blob download) + per-row `AddToCalendarButton` (.ics + Google fallback) | Click-outside dismiss; downloads via `URL.createObjectURL` + revoke  |
+| 2026-05-23 | M8.4 — mobile `lib/ics.ts` (expo-file-system + expo-sharing) + per-row 📅 + per-page Export        | `text/calendar` MIME + `com.apple.ical.ics` UTI for native handlers  |
 
 ## 🔴 Blocked / Pending
 
@@ -71,8 +74,9 @@
 ## ⏭️ Next Up
 
 1. Deploy backend so `/v1/artists/summary` is live; smoke-test against `?year=2024`
-2. Rebuild EAS dev client so `expo-av` is bundled before mobile audio can be tested on simulator/device
-3. M8.4 — `.ics` calendar export (RFC 5545 with Europe/London VTIMEZONE)
-4. Smoke-test mobile auth + sync end-to-end on iOS sim
-5. Smoke-test mobile offline tile pack: download → airplane mode → reload `/map`
-6. Apply for Spotify Extended Quota Mode to restore `/top-tracks`
+2. Rebuild EAS dev client so `expo-av` + `expo-file-system` + `expo-sharing` are bundled before audio/.ics can be tested on simulator/device
+3. Cut a release after Phase 8 verification (web redeploy + EAS preview build)
+4. Phase 9 kickoff (push notifications, now/next pinning, full POI map layer)
+5. Smoke-test mobile auth + sync end-to-end on iOS sim
+6. Smoke-test mobile offline tile pack: download → airplane mode → reload `/map`
+7. Apply for Spotify Extended Quota Mode to restore `/top-tracks`

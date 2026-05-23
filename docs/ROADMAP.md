@@ -93,7 +93,7 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 
 WCAG 2.1 AA, perf budgets, and i18n scaffolding are now per-PR gates baked into every Phase 8/9/10 feature rather than a standalone retrofit phase. Scheduled scraper validation against the 2026 lineup remains a one-off task triggered when the lineup drops.
 
-### Phase 8 — Planning Tool 🟡 In Progress (M8.3)
+### Phase 8 — Planning Tool 🟢 Complete
 
 - [x] M8.1 — `ArtistSummary` shared type + `pickPreviewTrack`/`topGenres` utils + `useArtistSummary` hook
 - [x] M8.1 — Backend `GET /v1/artists/summary?year=YYYY` (BatchGet artists, server-picked previewUrl)
@@ -103,7 +103,9 @@ WCAG 2.1 AA, perf budgets, and i18n scaffolding are now per-PR gates baked into 
 - [x] M8.2 — Mobile `favourites.tsx` swap to schedule view + store v3 migration
 - [x] M8.3 — Web + mobile `useAudioPreview` zustand singletons (HTMLAudioElement / expo-av)
 - [x] M8.3 — `PlayPreviewButton` wired into lineup cards, schedule rows, and artist pages
-- [ ] M8.4 — `.ics` calendar export (RFC 5545 + Europe/London VTIMEZONE)
+- [x] M8.4 — Shared `buildIcs` (RFC 5545 + Europe/London VTIMEZONE) + Google Calendar template URL
+- [x] M8.4 — Web `ExportButton` (per-page) + per-row `AddToCalendarButton` (.ics + Google fallback)
+- [x] M8.4 — Mobile share-sheet via `expo-file-system` + `expo-sharing` (per-row + per-page)
 
 ### Phase 9 — On-Site Usefulness 🔴 Not Started
 

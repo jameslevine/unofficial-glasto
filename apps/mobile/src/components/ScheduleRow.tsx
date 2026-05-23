@@ -5,6 +5,7 @@ import type { ScheduleItem } from '@glasto/shared';
 import { colors, radii, spacing } from '../lib/theme';
 import { formatTime } from '../lib/format';
 import { useFavourites } from '../store/favourites';
+import { sharePerformance } from '../lib/ics';
 import { PlayPreviewButton } from './PlayPreviewButton';
 
 interface Props {
@@ -111,6 +112,17 @@ const ScheduleRowInner = ({ item, gapMinutes, walkMinutes, fromStage, previewUrl
               <Text style={styles.makePrimaryText}>Primary</Text>
             </Pressable>
           )}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Add to calendar"
+            onPress={() => {
+              void sharePerformance(performance);
+            }}
+            hitSlop={8}
+            style={styles.calBtn}
+          >
+            <Text style={styles.calLabel}>📅</Text>
+          </Pressable>
         </View>
       </View>
     </View>
@@ -192,4 +204,12 @@ const styles = StyleSheet.create({
     borderRadius: radii.full,
   },
   makePrimaryText: { color: colors.accent, fontSize: 11, fontWeight: '600' },
+  calBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: radii.full,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  calLabel: { fontSize: 16 },
 });
