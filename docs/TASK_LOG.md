@@ -2,9 +2,9 @@
 
 ## 🔵 Current Task
 
-- **Task:** M9.3 POI map layer landed in code; next steps are deploy + smoke + 9.4 planning approval.
+- **Task:** M9.6 "My pin" landed in code (web + mobile + backend); next steps are deploy + sync + smoke.
 - **Started:** 2026-05-23
-- **Context:** Pulled `Jonty/glastonbury-app-data` 2025 GeoJSON (33 categories, 1,107 features) into `scraper/seed/pois/2025/` + a flattened `scraper/seed/pois/2025.json`. New `Poi` zod type, `POI_CATEGORY_META` (icon + colour + default-on flag), `POI_CATEGORY_ORDER`. Backend `GET /v1/poi?year=YYYY` (Joi-validated, 24h cache header) backed by a new single-table `POI#YEAR / POI#CATEGORY#id` partition. Shared `usePois` hook + `getPois` API client. Web `MapPage` renders POI markers via `mapboxgl.Marker` HTML buttons, with a horizontal chip row toggling categories; selection persisted to `localStorage`. Mobile `app/map.tsx` mirrors with `MarkerView` + `Pressable` pins, chip `ScrollView`, and `AsyncStorage` persistence. 46/46 tests pass; tsc + eslint + prettier clean. **9.4 deferred** — drafted `docs/PLAN_9_4_ROUTING.md` covering map georeferencing (QGIS), path tracing, GeoJSON LineString output, client-side A\* routing, and mobile `expo-location` integration.
+- **Context:** Multi-pin Cognito sync from v1. New `Pin` zod schema (id/userId/label/emoji?/lat/lon/updatedAt/deleted) + Joi `pinSyncBodySchema` (max 200 pins per request). DDB adapter `dynamodb-pins.ts` reuses single-table layout under `PK = USER#sub / SK = PIN#id`, with last-write-wins ConditionExpression on `updatedAt`. Backend mounts `pinsRouter` at `/v1/me/pins` (`GET` list, `POST /sync` merge). Web + mobile zustand stores (`glasto-pins`, persisted to localStorage / AsyncStorage) with `upsert/remove/applyServer/pendingForSync/active`. Sync hooks (`usePinsSync`) mirror favourites: send pending if any else list, apply merged response. Web `MapPage` long-press detection via `mousedown` + 500ms timer + 6px move tolerance + dragstart cancel; pins rendered as `mapboxgl.Marker` HTML elements (emoji glyph + accent-pink label pill, anchor bottom). Mobile `app/map.tsx` uses `<MapView onLongPress>` (GeoJSON Point feature) + `<MarkerView>` rendering and a transparent `Modal` form for label + emoji-grid picker. Edit/Delete callout actions on both platforms. 46/46 tests pass; tsc + eslint + prettier clean.
 
 ## ✅ Completed Tasks
 
@@ -73,6 +73,10 @@
 | 2026-05-23 | M9.3 — Backend `GET /v1/poi?year=YYYY` + DDB adapter on new `POI#YEAR` partition                      | 24h cache header; Joi-validated query; mounted at `/v1/poi`          |
 | 2026-05-23 | M9.3 — Web `MapPage` + mobile `/map` toggleable category chips, persisted (localStorage/AsyncStorage) | Defaults: toilets/water/food/medical/pharmacy/info/ATM/welfare on    |
 | 2026-05-23 | M9.4 planning — drafted `docs/PLAN_9_4_ROUTING.md`                                                    | Image georeferencing + path tracing approach; 4-day estimate         |
+| 2026-05-23 | M9.6 — `Pin` shared schema + Joi `pinSyncBodySchema` + `dynamodb-pins.ts` adapter (LWW on updatedAt)  | Reuses `USER#sub / PIN#id` single-table partition; max 200 per sync  |
+| 2026-05-23 | M9.6 — Backend `/v1/me/pins` (GET list, POST /sync merge); web + mobile zustand stores + sync hooks   | Mirrors favourites pattern; tombstone deletes for offline-first      |
+| 2026-05-23 | M9.6 — Web `MapPage` long-press (500ms + 6px move tolerance) → modal form → mapboxgl.Marker rendering | Edit/Delete callout; emoji-grid picker; XSS-safe label injection     |
+| 2026-05-23 | M9.6 — Mobile `app/map.tsx` `<MapView onLongPress>` + `<MarkerView>` + RN `Modal` label + emoji form  | Edit/Delete callout buttons; long-press coords from GeoJSON Point    |
 
 ## 🔴 Blocked / Pending
 
@@ -86,5 +90,5 @@
 4. Approve / iterate on `docs/PLAN_9_4_ROUTING.md` (Mapbox map image rights, v1 path scope, devices)
 5. Smoke-test mobile auth + sync end-to-end on iOS sim
 6. Smoke-test mobile offline tile pack: download → airplane mode → reload `/map`
-7. Phase 9 follow-ups: 9.1 push notifications, 9.5 battery saver, 9.6 my-pin
+7. Phase 9 follow-ups: 9.1 push notifications, 9.5 battery saver
 8. Apply for Spotify Extended Quota Mode to restore `/top-tracks`

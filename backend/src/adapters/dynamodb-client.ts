@@ -21,4 +21,5 @@ export const keys = {
   userPK: (sub: string) => `USER#${sub}`,
   favSK: (perfId: string) => `FAV#${perfId}`,
   poiPK: (year: number) => `POI#${year}`,
+  pinSK: (id: string) => `PIN#${id}`,
 };

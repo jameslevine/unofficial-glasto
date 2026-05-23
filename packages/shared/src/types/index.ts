@@ -112,6 +112,18 @@ export const ArtistSummary = z.object({
 });
 export type ArtistSummary = z.infer<typeof ArtistSummary>;
 
+export const Pin = z.object({
+  id: z.string().min(1).max(64),
+  userId: z.string(),
+  label: z.string().min(1).max(80),
+  emoji: z.string().max(8).optional(),
+  lat: z.number(),
+  lon: z.number(),
+  updatedAt: z.string().datetime(),
+  deleted: z.boolean().default(false),
+});
+export type Pin = z.infer<typeof Pin>;
+
 export const Favourite = z.object({
   perfId: z.string(),
   userId: z.string(),

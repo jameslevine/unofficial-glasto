@@ -3,6 +3,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { colors, radii, spacing } from '../src/lib/theme';
 import { useCognitoAuth } from '../src/hooks/useCognitoAuth';
 import { useFavouritesSync } from '../src/hooks/useFavouritesSync';
+import { usePinsSync } from '../src/hooks/usePinsSync';
 import { isAuthConfigured } from '../src/lib/auth';
 
 const YEARS = [2025, 2024, 2023, 2022] as const;
@@ -10,6 +11,7 @@ const YEARS = [2025, 2024, 2023, 2022] as const;
 export default function HomeScreen() {
   const auth = useCognitoAuth();
   useFavouritesSync(auth.signedIn);
+  usePinsSync(auth.signedIn);
   const showAuth = isAuthConfigured();
   return (
     <ScrollView contentContainerStyle={styles.container}>

@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 import Mapbox, { Camera, MapView, MarkerView } from '@rnmapbox/maps';
@@ -12,6 +21,7 @@ import {
 } from '@glasto/shared';
 import { api } from '../src/lib/api';
 import { colors, radii, spacing } from '../src/lib/theme';
+import { usePins } from '../src/store/pins';
 
 const TOKEN = (Constants.expoConfig?.extra?.mapboxToken as string | undefined) ?? '';
 const SITE_CENTER: [number, number] = [-2.5871, 51.1539];
@@ -28,11 +38,21 @@ if (TOKEN) Mapbox.setAccessToken(TOKEN);
 
 type PackStatus = 'idle' | 'checking' | 'downloading' | 'done' | 'error';
 
+const PIN_EMOJI_OPTIONS = ['📍', '⛺', '🚗', '👯', '🍻', '🚐', '🎪', '⭐'];
+
 interface SelectedFeature {
-  kind: 'stage' | 'poi';
+  kind: 'stage' | 'poi' | 'pin';
   id: string;
   name: string;
   subtitle: string;
+}
+
+interface PendingPin {
+  lat: number;
+  lon: number;
+  existingId?: string;
+  initialLabel: string;
+  initialEmoji: string;
 }
 
 const defaultActiveLayers = (): PoiCategory[] =>
@@ -47,6 +67,14 @@ export default function MapScreen() {
   const [packError, setPackError] = useState<string | null>(null);
   const [activeLayers, setActiveLayers] = useState<Set<PoiCategory>>(
     () => new Set(defaultActiveLayers()),
+  );
+  const [pendingPin, setPendingPin] = useState<PendingPin | null>(null);
+  const pinRecords = usePins((s) => s.records);
+  const upsertPin = usePins((s) => s.upsert);
+  const removePin = usePins((s) => s.remove);
+  const activePins = useMemo(
+    () => Object.values(pinRecords).filter((p) => !p.deleted),
+    [pinRecords],
   );
 
   useEffect(() => {
@@ -172,7 +200,17 @@ export default function MapScreen() {
 
   return (
     <View style={styles.root}>
-      <MapView style={styles.map} styleURL={STYLE_URL} logoEnabled>
+      <MapView
+        style={styles.map}
+        styleURL={STYLE_URL}
+        logoEnabled
+        onLongPress={(feature) => {
+          const coords = feature.geometry?.type === 'Point' ? feature.geometry.coordinates : null;
+          if (!coords || coords.length < 2) return;
+          const [lon, lat] = coords;
+          setPendingPin({ lat, lon, initialLabel: '', initialEmoji: '📍' });
+        }}
+      >
         <Camera defaultSettings={{ centerCoordinate: SITE_CENTER, zoomLevel: 13.5 }} />
 
         {pinned.map((s) => (
@@ -211,7 +249,31 @@ export default function MapScreen() {
             </MarkerView>
           );
         })}
+
+        {activePins.map((p) => (
+          <MarkerView key={`pin-${p.id}`} coordinate={[p.lon, p.lat]} anchor={{ x: 0.5, y: 1 }}>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={`My pin: ${p.label}`}
+              onPress={() =>
+                setSelected({ kind: 'pin', id: p.id, name: p.label, subtitle: 'My pin' })
+              }
+              style={styles.userPin}
+            >
+              <Text style={styles.userPinEmoji}>{p.emoji ?? '📍'}</Text>
+              <View style={styles.userPinLabelWrap}>
+                <Text style={styles.userPinLabel} numberOfLines={1}>
+                  {p.label}
+                </Text>
+              </View>
+            </Pressable>
+          </MarkerView>
+        ))}
       </MapView>
+
+      <View style={styles.hintBadge} pointerEvents="none">
+        <Text style={styles.hintText}>Long-press to drop a pin</Text>
+      </View>
 
       <ScrollView
         horizontal
@@ -285,9 +347,137 @@ export default function MapScreen() {
             </Text>
           </View>
           <Text style={styles.calloutMeta}>{selected.subtitle}</Text>
+          {selected.kind === 'pin' && (
+            <View style={styles.calloutActions}>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => {
+                  const rec = pinRecords[selected.id];
+                  if (!rec) return;
+                  setPendingPin({
+                    lat: rec.lat,
+                    lon: rec.lon,
+                    existingId: rec.id,
+                    initialLabel: rec.label,
+                    initialEmoji: rec.emoji ?? '📍',
+                  });
+                  setSelected(null);
+                }}
+                style={styles.calloutBtn}
+              >
+                <Text style={styles.calloutBtnText}>Edit</Text>
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                onPress={() => {
+                  removePin(selected.id);
+                  setSelected(null);
+                }}
+                style={[styles.calloutBtn, styles.calloutBtnDanger]}
+              >
+                <Text style={[styles.calloutBtnText, styles.calloutBtnTextDanger]}>Delete</Text>
+              </Pressable>
+            </View>
+          )}
         </View>
       )}
+
+      <PinFormModal
+        pending={pendingPin}
+        onCancel={() => setPendingPin(null)}
+        onSave={({ label, emoji }) => {
+          if (!pendingPin) return;
+          upsertPin({
+            id: pendingPin.existingId,
+            label,
+            emoji,
+            lat: pendingPin.lat,
+            lon: pendingPin.lon,
+          });
+          setPendingPin(null);
+        }}
+      />
     </View>
+  );
+}
+
+interface PinFormModalProps {
+  pending: PendingPin | null;
+  onCancel: () => void;
+  onSave: (input: { label: string; emoji: string }) => void;
+}
+
+function PinFormModal({ pending, onCancel, onSave }: PinFormModalProps) {
+  const [label, setLabel] = useState('');
+  const [emoji, setEmoji] = useState('📍');
+
+  useEffect(() => {
+    if (pending) {
+      setLabel(pending.initialLabel);
+      setEmoji(pending.initialEmoji);
+    }
+  }, [pending]);
+
+  if (!pending) return null;
+
+  const trimmed = label.trim();
+
+  return (
+    <Modal
+      visible
+      transparent
+      animationType="fade"
+      onRequestClose={onCancel}
+      accessibilityLabel={pending.existingId ? 'Edit pin' : 'New pin'}
+    >
+      <Pressable style={styles.modalBackdrop} onPress={onCancel}>
+        <Pressable style={styles.modalCard} onPress={() => undefined}>
+          <Text style={styles.modalTitle}>{pending.existingId ? 'Edit pin' : 'New pin'}</Text>
+          <Text style={styles.modalCoords}>
+            {pending.lat.toFixed(5)}, {pending.lon.toFixed(5)}
+          </Text>
+          <Text style={styles.modalLabel}>Label</Text>
+          <TextInput
+            value={label}
+            onChangeText={setLabel}
+            placeholder="Tent, meet-up, car…"
+            placeholderTextColor={colors.muted}
+            maxLength={80}
+            autoFocus
+            style={styles.modalInput}
+          />
+          <Text style={styles.modalLabel}>Icon</Text>
+          <View style={styles.modalEmojiRow}>
+            {PIN_EMOJI_OPTIONS.map((opt) => (
+              <Pressable
+                key={opt}
+                accessibilityRole="button"
+                accessibilityState={{ selected: emoji === opt }}
+                onPress={() => setEmoji(opt)}
+                style={[styles.modalEmojiBtn, emoji === opt && styles.modalEmojiBtnActive]}
+              >
+                <Text style={styles.modalEmojiText}>{opt}</Text>
+              </Pressable>
+            ))}
+          </View>
+          <View style={styles.modalActions}>
+            <Pressable accessibilityRole="button" onPress={onCancel} style={styles.modalBtn}>
+              <Text style={styles.modalBtnText}>Cancel</Text>
+            </Pressable>
+            <Pressable
+              accessibilityRole="button"
+              disabled={!trimmed}
+              onPress={() => onSave({ label: trimmed, emoji })}
+              style={[styles.modalBtn, styles.modalBtnPrimary, !trimmed && styles.modalBtnDisabled]}
+            >
+              <Text style={[styles.modalBtnText, styles.modalBtnTextPrimary]}>
+                {pending.existingId ? 'Save' : 'Drop pin'}
+              </Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Pressable>
+    </Modal>
   );
 }
 
@@ -390,6 +580,19 @@ const styles = StyleSheet.create({
     padding: spacing.sm,
   },
   errorText: { color: colors.muted, fontSize: 12 },
+  hintBadge: {
+    position: 'absolute',
+    top: spacing.md,
+    alignSelf: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: radii.full,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    opacity: 0.85,
+  },
+  hintText: { color: colors.muted, fontSize: 11, fontWeight: '600' },
   callout: {
     position: 'absolute',
     left: spacing.md,
@@ -410,4 +613,88 @@ const styles = StyleSheet.create({
   calloutTitle: { color: colors.fg, fontWeight: '600', flex: 1 },
   calloutClose: { color: colors.muted, fontSize: 16, paddingHorizontal: 4 },
   calloutMeta: { color: colors.muted, fontSize: 12, marginTop: 4 },
+  calloutActions: { flexDirection: 'row', gap: spacing.sm, marginTop: spacing.sm },
+  calloutBtn: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs,
+    borderRadius: radii.full,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+  },
+  calloutBtnDanger: { borderColor: colors.accent },
+  calloutBtnText: { color: colors.fg, fontSize: 12, fontWeight: '600' },
+  calloutBtnTextDanger: { color: colors.accent },
+  userPin: { alignItems: 'center' },
+  userPinEmoji: { fontSize: 22, lineHeight: 24 },
+  userPinLabelWrap: {
+    marginTop: 2,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: radii.full,
+    backgroundColor: colors.accent,
+    maxWidth: 140,
+  },
+  userPinLabel: { color: '#fff', fontSize: 10, fontWeight: '700' },
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.lg,
+  },
+  modalCard: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: colors.bg,
+    borderColor: colors.border,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: radii.md,
+    padding: spacing.lg,
+    gap: spacing.sm,
+  },
+  modalTitle: { color: colors.fg, fontSize: 16, fontWeight: '700' },
+  modalCoords: { color: colors.muted, fontSize: 12 },
+  modalLabel: { color: colors.fg, fontSize: 12, fontWeight: '600', marginTop: spacing.xs },
+  modalInput: {
+    color: colors.fg,
+    backgroundColor: colors.surface,
+    borderColor: colors.border,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: radii.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+  modalEmojiRow: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.xs },
+  modalEmojiBtn: {
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: radii.sm,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  modalEmojiBtnActive: { borderColor: colors.brand },
+  modalEmojiText: { fontSize: 18 },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: spacing.sm,
+    marginTop: spacing.md,
+  },
+  modalBtn: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderRadius: radii.sm,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+  },
+  modalBtnPrimary: {
+    backgroundColor: colors.brand,
+    borderColor: colors.brand,
+  },
+  modalBtnDisabled: { opacity: 0.5 },
+  modalBtnText: { color: colors.fg, fontSize: 13, fontWeight: '600' },
+  modalBtnTextPrimary: { color: colors.brandFg },
 });

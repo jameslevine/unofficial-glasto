@@ -5,6 +5,7 @@ import {
   ApiError,
   Favourite,
   Performance,
+  Pin,
   Poi,
   Stage,
 } from './types/index.js';
@@ -65,6 +66,23 @@ export const createApiClient = (opts: ApiClientOptions) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ favourites }),
+      }),
+    listPins: () => request('/me/pins', z.array(Pin)),
+    syncPins: (
+      pins: Array<{
+        id: string;
+        label: string;
+        emoji?: string;
+        lat: number;
+        lon: number;
+        updatedAt: string;
+        deleted?: boolean;
+      }>,
+    ) =>
+      request('/me/pins/sync', z.array(Pin), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pins }),
       }),
   };
 };

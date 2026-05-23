@@ -114,7 +114,7 @@ WCAG 2.1 AA, perf budgets, and i18n scaffolding are now per-PR gates baked into 
 - [x] Full POI map layer — 1,107 POIs across 33 categories from `Jonty/glastonbury-app-data` 2025 dataset (toilets, water, food, medical, info, ATM, accessibility, …)
 - [ ] GPS routing to next favourite — planning doc at [`docs/PLAN_9_4_ROUTING.md`](PLAN_9_4_ROUTING.md); needs map georeferencing + path tracing before build
 - [ ] Battery saver mode
-- [ ] "My pin" for tent / meet-up
+- [x] "My pin" for tent / meet-up — long-press on web/mobile map to drop, edit/delete callout, multi-pin Cognito sync via `/v1/me/pins`
 
 ### Phase 10 — Social + Discovery 🔴 Not Started
 

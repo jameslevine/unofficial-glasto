@@ -116,6 +116,35 @@ Request:
 
 Response includes both server-merged state and any new server-side changes since `since`.
 
+### My pins (Cognito-authenticated)
+
+| Method | Path            | Auth | Description                                               |
+| ------ | --------------- | ---- | --------------------------------------------------------- |
+| GET    | `/me/pins`      | ✅   | List active + deleted pins for the signed-in user.        |
+| POST   | `/me/pins/sync` | ✅   | Upsert pending pins (LWW on `updatedAt`); returns merged. |
+
+#### `POST /me/pins/sync`
+
+Request:
+
+```json
+{
+  "pins": [
+    {
+      "id": "pin_abc123",
+      "label": "Tent",
+      "emoji": "⛺",
+      "lat": 51.1539,
+      "lon": -2.5871,
+      "updatedAt": "2026-05-23T12:00:00Z",
+      "deleted": false
+    }
+  ]
+}
+```
+
+Maximum 200 pins per request. `id` matches `^[a-zA-Z0-9_-]{1,64}$`. Response is a `Pin[]` reflecting the post-merge server state.
+
 ## Error Format
 
 ```json

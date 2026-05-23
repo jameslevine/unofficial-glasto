@@ -10,6 +10,7 @@ import {
   useStages,
 } from '@glasto/shared';
 import { api } from '../../lib/api';
+import { usePins, type PinRecord } from '../../store/pins';
 
 const TOKEN = import.meta.env.VITE_MAPBOX_TOKEN ?? '';
 const SITE_CENTER: [number, number] = [-2.5871, 51.1539];
@@ -36,10 +37,22 @@ const loadActiveLayers = (): Set<PoiCategory> => {
 };
 
 interface SelectedFeature {
-  kind: 'stage' | 'poi';
+  kind: 'stage' | 'poi' | 'pin';
   id: string;
   name: string;
   subtitle: string;
+}
+
+const PIN_EMOJI_OPTIONS = ['📍', '⛺', '🚗', '👯', '🍻', '🚐', '🎪', '⭐'];
+const LONG_PRESS_MS = 500;
+const LONG_PRESS_MOVE_TOLERANCE = 6;
+
+interface PendingPin {
+  lat: number;
+  lon: number;
+  existingId?: string;
+  initialLabel: string;
+  initialEmoji: string;
 }
 
 export const MapPage = () => {
@@ -47,8 +60,16 @@ export const MapPage = () => {
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [selected, setSelected] = useState<SelectedFeature | null>(null);
   const [activeLayers, setActiveLayers] = useState<Set<PoiCategory>>(loadActiveLayers);
+  const [pendingPin, setPendingPin] = useState<PendingPin | null>(null);
   const { data: stages, isLoading: stagesLoading } = useStages(api);
   const { data: pois, isLoading: poisLoading } = usePois(api, POI_YEAR);
+  const pinRecords = usePins((s) => s.records);
+  const upsertPin = usePins((s) => s.upsert);
+  const removePin = usePins((s) => s.remove);
+  const activePins = useMemo<PinRecord[]>(
+    () => Object.values(pinRecords).filter((p) => !p.deleted),
+    [pinRecords],
+  );
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -82,7 +103,55 @@ export const MapPage = () => {
     });
     mapRef.current.addControl(new mapboxgl.NavigationControl({ showCompass: false }), 'top-right');
 
+    const map = mapRef.current;
+    let pressTimer: number | null = null;
+    let pressOrigin: { x: number; y: number } | null = null;
+    let pressLngLat: mapboxgl.LngLat | null = null;
+
+    const cancelPress = () => {
+      if (pressTimer != null) {
+        window.clearTimeout(pressTimer);
+        pressTimer = null;
+      }
+      pressOrigin = null;
+      pressLngLat = null;
+    };
+
+    const onDown = (e: mapboxgl.MapMouseEvent | mapboxgl.MapTouchEvent) => {
+      cancelPress();
+      pressOrigin = { x: e.point.x, y: e.point.y };
+      pressLngLat = e.lngLat;
+      pressTimer = window.setTimeout(() => {
+        if (!pressLngLat) return;
+        setPendingPin({
+          lat: pressLngLat.lat,
+          lon: pressLngLat.lng,
+          initialLabel: '',
+          initialEmoji: '📍',
+        });
+        cancelPress();
+      }, LONG_PRESS_MS);
+    };
+
+    const onMove = (e: mapboxgl.MapMouseEvent | mapboxgl.MapTouchEvent) => {
+      if (!pressOrigin) return;
+      const dx = e.point.x - pressOrigin.x;
+      const dy = e.point.y - pressOrigin.y;
+      if (dx * dx + dy * dy > LONG_PRESS_MOVE_TOLERANCE * LONG_PRESS_MOVE_TOLERANCE) {
+        cancelPress();
+      }
+    };
+
+    map.on('mousedown', onDown);
+    map.on('mousemove', onMove);
+    map.on('mouseup', cancelPress);
+    map.on('touchstart', onDown);
+    map.on('touchmove', onMove);
+    map.on('touchend', cancelPress);
+    map.on('dragstart', cancelPress);
+
     return () => {
+      cancelPress();
       mapRef.current?.remove();
       mapRef.current = null;
     };
@@ -185,6 +254,72 @@ export const MapPage = () => {
     };
   }, [visiblePois]);
 
+  // User pin markers
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map) return;
+
+    const placePins = () => {
+      const markers: mapboxgl.Marker[] = [];
+      activePins.forEach((p) => {
+        const el = document.createElement('button');
+        el.type = 'button';
+        el.setAttribute('aria-label', `My pin: ${p.label}`);
+        el.style.cssText = `
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          background: transparent;
+          border: 0;
+          cursor: pointer;
+          transform: translateY(-12px);
+        `;
+        el.innerHTML = `
+          <span style="
+            font-size: 22px;
+            line-height: 1;
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.5));
+          ">${p.emoji ?? '📍'}</span>
+          <span style="
+            margin-top: 2px;
+            padding: 1px 6px;
+            border-radius: 999px;
+            background: #ec4899;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            white-space: nowrap;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+            max-width: 140px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          ">${p.label.replace(/[<&>]/g, '')}</span>
+        `;
+        el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setSelected({ kind: 'pin', id: p.id, name: p.label, subtitle: 'My pin' });
+          map.flyTo({ center: [p.lon, p.lat], zoom: Math.max(map.getZoom(), 16) });
+        });
+        const m = new mapboxgl.Marker({ element: el, anchor: 'bottom' })
+          .setLngLat([p.lon, p.lat])
+          .addTo(map);
+        markers.push(m);
+      });
+      return markers;
+    };
+
+    const markers = map.isStyleLoaded() ? placePins() : [];
+    if (!map.isStyleLoaded()) {
+      map.once('load', () => {
+        const m = placePins();
+        markers.push(...m);
+      });
+    }
+    return () => {
+      markers.forEach((m) => m.remove());
+    };
+  }, [activePins]);
+
   if (!TOKEN) {
     return (
       <div className="rounded-lg border border-border bg-surface p-6 text-sm text-muted">
@@ -244,6 +379,10 @@ export const MapPage = () => {
         })}
       </div>
 
+      <p className="text-xs text-muted">
+        Tip: long-press the map to drop your own pin (tent, meet-up, car…).
+      </p>
+
       <div className="relative h-[70vh] overflow-hidden rounded-lg border border-border">
         <div ref={containerRef} className="h-full w-full" />
         {selected && (
@@ -260,9 +399,147 @@ export const MapPage = () => {
               </button>
             </div>
             <p className="text-xs uppercase tracking-wide text-muted">{selected.subtitle}</p>
+            {selected.kind === 'pin' && (
+              <div className="mt-2 flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const rec = pinRecords[selected.id];
+                    if (!rec) return;
+                    setPendingPin({
+                      lat: rec.lat,
+                      lon: rec.lon,
+                      existingId: rec.id,
+                      initialLabel: rec.label,
+                      initialEmoji: rec.emoji ?? '📍',
+                    });
+                    setSelected(null);
+                  }}
+                  className="rounded-full border border-border px-3 py-1 text-xs hover:border-brand"
+                >
+                  Edit
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    removePin(selected.id);
+                    setSelected(null);
+                  }}
+                  className="rounded-full border border-border px-3 py-1 text-xs text-accent hover:border-accent"
+                >
+                  Delete
+                </button>
+              </div>
+            )}
           </div>
         )}
+
+        {pendingPin && (
+          <PinForm
+            pending={pendingPin}
+            onCancel={() => setPendingPin(null)}
+            onSave={({ label, emoji }) => {
+              upsertPin({
+                id: pendingPin.existingId,
+                label,
+                emoji,
+                lat: pendingPin.lat,
+                lon: pendingPin.lon,
+              });
+              setPendingPin(null);
+            }}
+          />
+        )}
       </div>
+    </div>
+  );
+};
+
+interface PinFormProps {
+  pending: PendingPin;
+  onCancel: () => void;
+  onSave: (input: { label: string; emoji: string }) => void;
+}
+
+const PinForm = ({ pending, onCancel, onSave }: PinFormProps) => {
+  const [label, setLabel] = useState(pending.initialLabel);
+  const [emoji, setEmoji] = useState(pending.initialEmoji);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  return (
+    <div
+      role="dialog"
+      aria-label={pending.existingId ? 'Edit pin' : 'New pin'}
+      className="absolute inset-0 flex items-center justify-center bg-bg/40 px-4"
+      onClick={onCancel}
+    >
+      <form
+        onClick={(e) => e.stopPropagation()}
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (!label.trim()) return;
+          onSave({ label: label.trim(), emoji });
+        }}
+        className="w-full max-w-sm space-y-3 rounded-lg border border-border bg-bg p-4 shadow-xl"
+      >
+        <div className="space-y-1">
+          <p className="text-sm font-semibold">{pending.existingId ? 'Edit pin' : 'New pin'}</p>
+          <p className="text-xs text-muted">
+            {pending.lat.toFixed(5)}, {pending.lon.toFixed(5)}
+          </p>
+        </div>
+        <label className="block text-xs font-medium" htmlFor="pin-label">
+          Label
+        </label>
+        <input
+          ref={inputRef}
+          id="pin-label"
+          type="text"
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+          maxLength={80}
+          placeholder="Tent, meet-up, car…"
+          className="w-full rounded-md border border-border bg-surface px-3 py-2 text-sm text-fg outline-none focus:border-brand"
+        />
+        <fieldset className="space-y-1">
+          <legend className="text-xs font-medium">Icon</legend>
+          <div className="flex flex-wrap gap-1.5">
+            {PIN_EMOJI_OPTIONS.map((opt) => (
+              <button
+                key={opt}
+                type="button"
+                onClick={() => setEmoji(opt)}
+                aria-pressed={emoji === opt}
+                className={`flex h-8 w-8 items-center justify-center rounded-md border ${
+                  emoji === opt ? 'border-brand bg-surface' : 'border-border bg-surface'
+                }`}
+              >
+                {opt}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+        <div className="flex justify-end gap-2 pt-1">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-md border border-border px-3 py-1 text-xs hover:border-brand"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            disabled={!label.trim()}
+            className="rounded-md bg-brand px-3 py-1 text-xs font-semibold text-bg disabled:opacity-50"
+          >
+            {pending.existingId ? 'Save' : 'Drop pin'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

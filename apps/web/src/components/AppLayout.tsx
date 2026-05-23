@@ -2,6 +2,7 @@ import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { useOnline } from '../hooks/useOnline';
 import { useAuth } from '../hooks/useAuth';
 import { useFavouritesSync } from '../hooks/useFavouritesSync';
+import { usePinsSync } from '../hooks/usePinsSync';
 import { beginSignIn, isAuthConfigured, signOut } from '../lib/auth';
 
 const YEARS = [2025, 2024, 2023, 2022] as const;
@@ -12,6 +13,7 @@ export const AppLayout = () => {
   const authReady = isAuthConfigured();
   const location = useLocation();
   useFavouritesSync();
+  usePinsSync();
   return (
     <div className="min-h-full">
       <header className="sticky top-0 z-10 border-b border-border bg-bg/90 backdrop-blur">
