@@ -5,6 +5,7 @@ import type { ArtistSummary, Performance } from '@glasto/shared';
 import { api } from '../../lib/api';
 import { useFavourites } from '../../store/favourites';
 import { ExportButton } from '../schedule/ExportButton';
+import { NowNextBanner } from '../schedule/NowNextBanner';
 import { ScheduleTimeline } from '../schedule/ScheduleTimeline';
 
 const YEARS = [2025, 2024, 2023, 2022] as const;
@@ -75,7 +76,10 @@ export const FavouritesPage = () => {
       ) : isLoading && favourites.length === 0 ? (
         <p className="text-muted">Loading…</p>
       ) : (
-        <ScheduleTimeline performances={favourites} stages={stages} slugPreview={slugPreview} />
+        <>
+          <NowNextBanner performances={favourites} />
+          <ScheduleTimeline performances={favourites} stages={stages} slugPreview={slugPreview} />
+        </>
       )}
     </div>
   );

@@ -107,10 +107,10 @@ WCAG 2.1 AA, perf budgets, and i18n scaffolding are now per-PR gates baked into 
 - [x] M8.4 — Web `ExportButton` (per-page) + per-row `AddToCalendarButton` (.ics + Google fallback)
 - [x] M8.4 — Mobile share-sheet via `expo-file-system` + `expo-sharing` (per-row + per-page)
 
-### Phase 9 — On-Site Usefulness 🔴 Not Started
+### Phase 9 — On-Site Usefulness 🟡 In Progress
 
 - [ ] Push notifications ("favourite starts in 15 min")
-- [ ] Now/next pinning above the schedule when festival is live
+- [x] Now/next pinning above the schedule when festival is live
 - [ ] Full POI map layer (toilets, food, water taps, first aid)
 - [ ] GPS routing to next favourite
 - [ ] Battery saver mode

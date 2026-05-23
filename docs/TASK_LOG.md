@@ -67,6 +67,7 @@
 | 2026-05-23 | M8.4 — web `ExportButton` (Blob download) + per-row `AddToCalendarButton` (.ics + Google fallback) | Click-outside dismiss; downloads via `URL.createObjectURL` + revoke  |
 | 2026-05-23 | M8.4 — mobile `lib/ics.ts` (expo-file-system + expo-sharing) + per-row 📅 + per-page Export        | `text/calendar` MIME + `com.apple.ical.ics` UTI for native handlers  |
 | 2026-05-23 | Deployed backend (`/v1/artists/summary` live) + web bundle to dev                                  | Inlined `pickPreviewTrack`; hardcoded `Schedule: rate(1 day)` in CFN |
+| 2026-05-23 | M9.2 — `getNowNext` shared util + web/mobile `NowNextBanner` above schedule, ticks every 60s       | 7 vitest cases; respects `primaryByGroup` for active conflicts       |
 
 ## 🔴 Blocked / Pending
 

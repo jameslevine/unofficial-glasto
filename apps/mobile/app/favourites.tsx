@@ -9,6 +9,7 @@ import {
   useStages,
   walkingMinutes,
 } from '@glasto/shared';
+import { NowNextBanner } from '../src/components/NowNextBanner';
 import { ScheduleRow } from '../src/components/ScheduleRow';
 import { api } from '../src/lib/api';
 import { formatDay } from '../src/lib/format';
@@ -83,6 +84,7 @@ export default function FavouritesScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
+      <NowNextBanner performances={favourites} />
       <View style={styles.exportRow}>
         <Pressable
           accessibilityRole="button"
