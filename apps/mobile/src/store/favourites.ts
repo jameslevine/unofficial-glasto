@@ -10,8 +10,10 @@ export interface FavouriteRecord {
 interface FavouritesState {
   records: Record<string, FavouriteRecord>;
   ids: Record<string, true>;
+  primaryByGroup: Record<string, string>;
   toggle: (perfId: string) => void;
   has: (perfId: string) => boolean;
+  setPrimary: (groupId: string, perfId: string) => void;
   applyServer: (rows: Array<{ perfId: string; updatedAt: string; deleted: boolean }>) => void;
   pendingForSync: () => Array<{ perfId: string; updatedAt: string; deleted: boolean }>;
   clear: () => void;
@@ -30,6 +32,11 @@ export const useFavourites = create<FavouritesState>()(
     (set, get) => ({
       records: {},
       ids: {},
+      primaryByGroup: {},
+      setPrimary: (groupId, perfId) =>
+        set((state) => ({
+          primaryByGroup: { ...state.primaryByGroup, [groupId]: perfId },
+        })),
       toggle: (perfId) =>
         set((state) => {
           const now = new Date().toISOString();
@@ -60,23 +67,27 @@ export const useFavourites = create<FavouritesState>()(
           updatedAt: rec.updatedAt,
           deleted: rec.deleted,
         })),
-      clear: () => set({ records: {}, ids: {} }),
+      clear: () => set({ records: {}, ids: {}, primaryByGroup: {} }),
     }),
     {
       name: 'glasto-favourites',
       storage: createJSONStorage(() => AsyncStorage),
-      version: 2,
+      version: 3,
       migrate: (persisted, version) => {
-        if (version < 2 && persisted && typeof persisted === 'object' && 'ids' in persisted) {
-          const oldIds = (persisted as { ids: Record<string, true> }).ids ?? {};
+        let next = persisted as Record<string, unknown> | undefined;
+        if (version < 2 && next && typeof next === 'object' && 'ids' in next) {
+          const oldIds = (next as { ids: Record<string, true> }).ids ?? {};
           const now = new Date().toISOString();
           const records: Record<string, FavouriteRecord> = {};
           for (const id of Object.keys(oldIds)) {
             records[id] = { updatedAt: now, deleted: false };
           }
-          return { records, ids: deriveIds(records) };
+          next = { records, ids: deriveIds(records) };
         }
-        return persisted;
+        if (next && typeof next === 'object' && !('primaryByGroup' in next)) {
+          next = { ...next, primaryByGroup: {} };
+        }
+        return next;
       },
     },
   ),

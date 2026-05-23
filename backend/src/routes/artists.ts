@@ -1,7 +1,9 @@
 import { Router } from 'express';
 import Joi from 'joi';
-import type { Artist } from '@glasto/shared';
-import { getArtistBySlug, putArtist } from '../adapters/dynamodb-artists.js';
+import type { Artist, ArtistSummary } from '@glasto/shared';
+import { pickPreviewTrack } from '@glasto/shared';
+import { getArtistBySlug, getArtistsBySlugs, putArtist } from '../adapters/dynamodb-artists.js';
+import { getLineupByYear } from '../adapters/dynamodb-lineup.js';
 import { getTopTracks, searchArtist } from '../lib/spotify-client.js';
 import { AppError, asyncHandler } from '../lib/errors.js';
 import { HTTP_STATUS } from '../constants/index.js';
@@ -63,7 +65,31 @@ const artistQuerySchema = Joi.object({
   name: Joi.string().min(1).max(200).optional(),
 });
 
+const summaryQuerySchema = Joi.object({
+  year: Joi.number().integer().min(1970).max(2100).required(),
+});
+
 export const artistsRouter = Router();
+
+artistsRouter.get(
+  '/summary',
+  validateQuery(summaryQuerySchema),
+  asyncHandler(async (req, res) => {
+    const year = Number(req.query.year);
+    const lineup = await getLineupByYear(year);
+    const slugs = Array.from(
+      new Set(lineup.map((p) => p.artistSlug).filter((s): s is string => !!s)),
+    );
+    const artists = await getArtistsBySlugs(slugs);
+    const data: ArtistSummary[] = artists.map((a) => ({
+      slug: a.slug,
+      genres: a.genres,
+      previewUrl: pickPreviewTrack(a)?.previewUrl ?? null,
+    }));
+    res.set('Cache-Control', 'public, max-age=3600');
+    res.json({ success: true, data });
+  }),
+);
 
 artistsRouter.get<'/:slug', { slug: string }>(
   '/:slug',

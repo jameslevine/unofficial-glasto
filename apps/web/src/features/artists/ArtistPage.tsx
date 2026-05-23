@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { useArtist } from '@glasto/shared';
+import { pickPreviewTrack, useArtist } from '@glasto/shared';
 import { api } from '../../lib/api';
+import { PlayPreviewButton } from '../audio/PlayPreviewButton';
 
 export const ArtistPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -36,6 +37,7 @@ export const ArtistPage = () => {
   if (!artist) return null;
 
   const hasSpotify = !!artist.spotifyId;
+  const previewTrack = pickPreviewTrack(artist);
 
   return (
     <article className="space-y-6">
@@ -68,16 +70,28 @@ export const ArtistPage = () => {
               ))}
             </ul>
           )}
-          {hasSpotify && (
-            <a
-              href={artist.spotifyUrl ?? `https://open.spotify.com/artist/${artist.spotifyId}`}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-brand hover:underline"
-            >
-              Open in Spotify ↗
-            </a>
-          )}
+          <div className="flex flex-wrap items-center gap-3">
+            {previewTrack?.previewUrl && (
+              <div className="flex items-center gap-2">
+                <PlayPreviewButton
+                  id={`artist-${artist.slug}`}
+                  previewUrl={previewTrack.previewUrl}
+                  size="md"
+                />
+                <span className="text-xs text-muted">Preview "{previewTrack.name}"</span>
+              </div>
+            )}
+            {hasSpotify && (
+              <a
+                href={artist.spotifyUrl ?? `https://open.spotify.com/artist/${artist.spotifyId}`}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-sm text-brand hover:underline"
+              >
+                Open in Spotify ↗
+              </a>
+            )}
+          </div>
         </div>
       </header>
 

@@ -1,11 +1,17 @@
 import { useQueries } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
-import type { Performance, Stage } from '@glasto/shared';
-import { lineupQueryKey, useStages, walkingMinutes } from '@glasto/shared';
-import { PerformanceCard } from '../src/components/PerformanceCard';
+import type { ArtistSummary, Performance, Stage } from '@glasto/shared';
+import {
+  artistSummaryQueryKey,
+  buildSchedule,
+  lineupQueryKey,
+  useStages,
+  walkingMinutes,
+} from '@glasto/shared';
+import { ScheduleRow } from '../src/components/ScheduleRow';
 import { api } from '../src/lib/api';
-import { formatDay, groupByDay } from '../src/lib/format';
+import { formatDay } from '../src/lib/format';
 import { useFavourites } from '../src/store/favourites';
 import { colors, radii, spacing } from '../src/lib/theme';
 
@@ -22,10 +28,28 @@ export default function FavouritesScreen() {
     })),
   });
 
+  const summaryQueries = useQueries({
+    queries: YEARS.map((year) => ({
+      queryKey: artistSummaryQueryKey(year),
+      queryFn: () => api.getArtistSummary(year),
+      staleTime: 1000 * 60 * 60 * 24,
+    })),
+  });
+
   const isLoading = queries.some((q) => q.isLoading);
   const all = useMemo(() => queries.flatMap((q) => q.data ?? []), [queries]);
   const favourites = useMemo<Performance[]>(() => all.filter((p) => ids[p.id]), [all, ids]);
-  const grouped = useMemo(() => groupByDay(favourites), [favourites]);
+  const days = useMemo(() => buildSchedule(favourites, ids), [favourites, ids]);
+
+  const slugPreview = useMemo(() => {
+    const map = new Map<string, string | null>();
+    for (const q of summaryQueries) {
+      const data = q.data as ArtistSummary[] | undefined;
+      if (!data) continue;
+      for (const a of data) map.set(a.slug, a.previewUrl);
+    }
+    return map;
+  }, [summaryQueries]);
 
   const { data: stages } = useStages(api);
   const stageBySlug = useMemo(() => {
@@ -58,15 +82,18 @@ export default function FavouritesScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.scroll}>
-      {grouped.map(([d, items]) => (
-        <View key={d} style={styles.daySection}>
-          <Text style={styles.dayHeading}>{formatDay(d)}</Text>
+      {days.map(({ day, items }) => (
+        <View key={day} style={styles.daySection}>
+          <Text style={styles.dayHeading}>{formatDay(day)}</Text>
           <View style={styles.dayCard}>
-            {items.map((p, i) => {
+            {items.map((item, i) => {
               const prev = items[i - 1];
-              const fromStage = prev ? findStage(prev) : undefined;
-              const toStage = findStage(p);
-              const minutes =
+              const gapMinutes = prev
+                ? Math.max(0, Math.round((item.startMs - prev.endMs) / 60000))
+                : null;
+              const fromStage = prev ? findStage(prev.performance) : undefined;
+              const toStage = findStage(item.performance);
+              const walkMinutes =
                 prev &&
                 fromStage?.lat != null &&
                 fromStage?.lon != null &&
@@ -78,14 +105,18 @@ export default function FavouritesScreen() {
                     )
                   : null;
               return (
-                <View key={p.id}>
-                  {minutes !== null && minutes > 0 && (
-                    <Text style={styles.walkLine}>
-                      ↳ ~{minutes} min walk from {prev?.stage}
-                    </Text>
-                  )}
-                  <PerformanceCard performance={p} />
-                </View>
+                <ScheduleRow
+                  key={item.performance.id}
+                  item={item}
+                  gapMinutes={gapMinutes}
+                  walkMinutes={walkMinutes}
+                  fromStage={prev?.performance.stage ?? null}
+                  previewUrl={
+                    item.performance.artistSlug
+                      ? (slugPreview.get(item.performance.artistSlug) ?? null)
+                      : null
+                  }
+                />
               );
             })}
           </View>
@@ -114,11 +145,5 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     overflow: 'hidden',
-  },
-  walkLine: {
-    color: colors.muted,
-    fontSize: 12,
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.sm,
   },
 });

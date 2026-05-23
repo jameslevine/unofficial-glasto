@@ -56,6 +56,13 @@ export const Stage = z.object({
 });
 export type Stage = z.infer<typeof Stage>;
 
+export const ArtistSummary = z.object({
+  slug: z.string(),
+  genres: z.array(z.string()),
+  previewUrl: z.string().url().nullable(),
+});
+export type ArtistSummary = z.infer<typeof ArtistSummary>;
+
 export const Favourite = z.object({
   perfId: z.string(),
   userId: z.string(),

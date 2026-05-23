@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import type { DayOfFestival, Performance } from '@glasto/shared';
-import { useLineup } from '@glasto/shared';
+import { topGenres, useArtistSummary, useLineup } from '@glasto/shared';
 import { Chip } from '../../src/components/Chip';
 import { PerformanceCard } from '../../src/components/PerformanceCard';
 import { api } from '../../src/lib/api';
@@ -30,10 +30,30 @@ export default function LineupScreen() {
   const valid = VALID_YEARS.has(yearNum);
 
   const { data, isLoading, error } = useLineup(api, valid ? yearNum : 0);
+  const { data: summary } = useArtistSummary(api, valid ? yearNum : 0);
 
   const [search, setSearch] = useState('');
   const [day, setDay] = useState<DayOfFestival | 'ALL'>('ALL');
   const [area, setArea] = useState<string | 'ALL'>('ALL');
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+
+  const toggleGenre = useCallback((g: string) => {
+    setSelectedGenres((prev) => (prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]));
+  }, []);
+
+  const genreList = useMemo(() => topGenres(summary ?? [], 30), [summary]);
+
+  const slugGenres = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const a of summary ?? []) map.set(a.slug, a.genres);
+    return map;
+  }, [summary]);
+
+  const slugPreview = useMemo(() => {
+    const map = new Map<string, string | null>();
+    for (const a of summary ?? []) map.set(a.slug, a.previewUrl);
+    return map;
+  }, [summary]);
 
   const areas = useMemo(() => {
     if (!data) return [] as string[];
@@ -45,20 +65,30 @@ export default function LineupScreen() {
   const sections = useMemo<DaySection[]>(() => {
     if (!data) return [];
     const q = search.trim().toLowerCase();
+    const genreSet = new Set(selectedGenres);
     const filtered = data.filter((p) => {
       if (day !== 'ALL' && p.day !== day) return false;
       if (area !== 'ALL' && p.area !== area) return false;
       if (q && !p.title.toLowerCase().includes(q) && !p.stage.toLowerCase().includes(q)) {
         return false;
       }
+      if (genreSet.size > 0) {
+        const gs = p.artistSlug ? slugGenres.get(p.artistSlug) : undefined;
+        if (!gs || !gs.some((g) => genreSet.has(g))) return false;
+      }
       return true;
     });
     return groupByDay(filtered).map(([title, items]) => ({ title, data: items }));
-  }, [data, search, day, area]);
+  }, [data, search, day, area, selectedGenres, slugGenres]);
 
   const renderItem = useCallback(
-    ({ item }: { item: Performance }) => <PerformanceCard performance={item} />,
-    [],
+    ({ item }: { item: Performance }) => (
+      <PerformanceCard
+        performance={item}
+        previewUrl={item.artistSlug ? (slugPreview.get(item.artistSlug) ?? null) : null}
+      />
+    ),
+    [slugPreview],
   );
   const renderSectionHeader = useCallback(
     ({ section }: { section: DaySection }) => (
@@ -110,6 +140,27 @@ export default function LineupScreen() {
           <Chip label="All areas" active={area === 'ALL'} onPress={() => setArea('ALL')} />
           {areas.map((a) => (
             <Chip key={a} label={a} active={area === a} onPress={() => setArea(a)} />
+          ))}
+        </ScrollView>
+      )}
+      {genreList.length > 0 && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.row}
+        >
+          <Chip
+            label="All genres"
+            active={selectedGenres.length === 0}
+            onPress={() => setSelectedGenres([])}
+          />
+          {genreList.map((g) => (
+            <Chip
+              key={g}
+              label={g}
+              active={selectedGenres.includes(g)}
+              onPress={() => toggleGenre(g)}
+            />
           ))}
         </ScrollView>
       )}

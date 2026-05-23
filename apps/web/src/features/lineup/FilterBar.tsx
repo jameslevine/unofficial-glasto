@@ -11,6 +11,10 @@ interface Props {
   onArea: (a: string) => void;
   areas: string[];
   allValue: '__ALL__';
+  genres: string[];
+  selectedGenres: string[];
+  onToggleGenre: (genre: string) => void;
+  onClearGenres: () => void;
 }
 
 export const FilterBar = ({
@@ -22,6 +26,10 @@ export const FilterBar = ({
   onArea,
   areas,
   allValue,
+  genres,
+  selectedGenres,
+  onToggleGenre,
+  onClearGenres,
 }: Props) => (
   <div className="space-y-3 rounded-lg border border-border bg-surface p-3">
     <div className="flex flex-wrap items-center gap-2">
@@ -70,5 +78,32 @@ export const FilterBar = ({
         </button>
       ))}
     </div>
+
+    {genres.length > 0 && (
+      <div className="flex gap-1.5 overflow-x-auto pb-1" role="group" aria-label="Filter by genre">
+        <button
+          type="button"
+          onClick={onClearGenres}
+          aria-pressed={selectedGenres.length === 0}
+          className={`chip shrink-0 ${selectedGenres.length === 0 ? 'chip-active' : ''}`}
+        >
+          All genres
+        </button>
+        {genres.map((g) => {
+          const active = selectedGenres.includes(g);
+          return (
+            <button
+              key={g}
+              type="button"
+              onClick={() => onToggleGenre(g)}
+              aria-pressed={active}
+              className={`chip shrink-0 ${active ? 'chip-active' : ''}`}
+            >
+              {g}
+            </button>
+          );
+        })}
+      </div>
+    )}
   </div>
 );

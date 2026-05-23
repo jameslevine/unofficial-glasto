@@ -9,8 +9,9 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useArtist } from '@glasto/shared';
+import { pickPreviewTrack, useArtist } from '@glasto/shared';
 import { api } from '../../src/lib/api';
+import { PlayPreviewButton } from '../../src/components/PlayPreviewButton';
 import { colors, radii, spacing } from '../../src/lib/theme';
 
 export default function ArtistScreen() {
@@ -56,6 +57,18 @@ export default function ArtistScreen() {
                   <Text style={styles.genres} numberOfLines={2}>
                     {data.genres.slice(0, 3).join(' · ')}
                   </Text>
+                )}
+                {pickPreviewTrack(data)?.previewUrl && (
+                  <View style={styles.previewRow}>
+                    <PlayPreviewButton
+                      id={`artist-${data.slug}`}
+                      previewUrl={pickPreviewTrack(data)?.previewUrl ?? null}
+                      size="md"
+                    />
+                    <Text style={styles.muted} numberOfLines={1}>
+                      Preview &ldquo;{pickPreviewTrack(data)?.name ?? ''}&rdquo;
+                    </Text>
+                  </View>
                 )}
                 {data.spotifyId && (
                   <Pressable
@@ -116,6 +129,12 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
   },
   spotifyLabel: { color: colors.brand, fontSize: 13, fontWeight: '600' },
+  previewRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    marginTop: spacing.sm,
+  },
   notice: {
     padding: spacing.md,
     borderRadius: radii.md,

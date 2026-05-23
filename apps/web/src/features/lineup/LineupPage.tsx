@@ -1,6 +1,6 @@
-import { useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useLineup } from '@glasto/shared';
+import { useCallback, useMemo, useState } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { topGenres, useArtistSummary, useLineup } from '@glasto/shared';
 import type { DayOfFestival, Performance } from '@glasto/shared';
 import { api } from '../../lib/api';
 import { PerformanceCard } from './PerformanceCard';
@@ -13,12 +13,60 @@ export const LineupPage = () => {
   const { year: yearParam } = useParams<{ year: string }>();
   const year = Number(yearParam);
   const query = useLineup(api, year);
+  const summaryQuery = useArtistSummary(api, year);
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [day, setDay] = useState<DayOfFestival | typeof ALL>(ALL);
   const [area, setArea] = useState<string>(ALL);
 
+  const selectedGenres = useMemo<string[]>(() => {
+    const raw = searchParams.get('g');
+    if (!raw) return [];
+    return raw
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+  }, [searchParams]);
+
+  const updateGenres = useCallback(
+    (next: string[]) => {
+      const params = new URLSearchParams(searchParams);
+      if (next.length === 0) params.delete('g');
+      else params.set('g', next.join(','));
+      setSearchParams(params, { replace: true });
+    },
+    [searchParams, setSearchParams],
+  );
+
+  const toggleGenre = useCallback(
+    (g: string) => {
+      const next = selectedGenres.includes(g)
+        ? selectedGenres.filter((x) => x !== g)
+        : [...selectedGenres, g];
+      updateGenres(next);
+    },
+    [selectedGenres, updateGenres],
+  );
+
+  const clearGenres = useCallback(() => updateGenres([]), [updateGenres]);
+
   const data = query.data ?? [];
+  const summary = summaryQuery.data ?? [];
+
+  const genreList = useMemo(() => topGenres(summary, 30), [summary]);
+
+  const slugGenres = useMemo(() => {
+    const map = new Map<string, string[]>();
+    for (const a of summary) map.set(a.slug, a.genres);
+    return map;
+  }, [summary]);
+
+  const slugPreview = useMemo(() => {
+    const map = new Map<string, string | null>();
+    for (const a of summary) map.set(a.slug, a.previewUrl);
+    return map;
+  }, [summary]);
 
   const areas = useMemo(() => {
     const set = new Set<string>();
@@ -28,15 +76,20 @@ export const LineupPage = () => {
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
+    const genreSet = new Set(selectedGenres);
     return data.filter((p) => {
       if (day !== ALL && p.day !== day) return false;
       if (area !== ALL && p.area !== area) return false;
       if (q && !p.title.toLowerCase().includes(q) && !p.stage.toLowerCase().includes(q)) {
         return false;
       }
+      if (genreSet.size > 0) {
+        const gs = p.artistSlug ? slugGenres.get(p.artistSlug) : undefined;
+        if (!gs || !gs.some((g) => genreSet.has(g))) return false;
+      }
       return true;
     });
-  }, [data, search, day, area]);
+  }, [data, search, day, area, selectedGenres, slugGenres]);
 
   const grouped = useMemo(() => groupByDay(filtered), [filtered]);
 
@@ -73,6 +126,10 @@ export const LineupPage = () => {
         onArea={setArea}
         areas={areas}
         allValue={ALL}
+        genres={genreList}
+        selectedGenres={selectedGenres}
+        onToggleGenre={toggleGenre}
+        onClearGenres={clearGenres}
       />
 
       {filtered.length === 0 ? (
@@ -90,7 +147,10 @@ export const LineupPage = () => {
               <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {items.map((p) => (
                   <li key={p.id}>
-                    <PerformanceCard performance={p} />
+                    <PerformanceCard
+                      performance={p}
+                      previewUrl={p.artistSlug ? (slugPreview.get(p.artistSlug) ?? null) : null}
+                    />
                   </li>
                 ))}
               </ul>

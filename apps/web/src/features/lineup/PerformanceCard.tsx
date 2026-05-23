@@ -1,9 +1,15 @@
 import { Link } from 'react-router-dom';
 import type { Performance } from '@glasto/shared';
 import { useFavourites } from '../../store/favourites';
+import { PlayPreviewButton } from '../audio/PlayPreviewButton';
 import { formatTime } from './utils';
 
-export const PerformanceCard = ({ performance }: { performance: Performance }) => {
+interface Props {
+  performance: Performance;
+  previewUrl?: string | null;
+}
+
+export const PerformanceCard = ({ performance, previewUrl }: Props) => {
   const isFav = useFavourites((s) => Boolean(s.ids[performance.id]));
   const toggle = useFavourites((s) => s.toggle);
 
@@ -37,11 +43,14 @@ export const PerformanceCard = ({ performance }: { performance: Performance }) =
           {performance.area} · {performance.stage}
         </p>
       </div>
-      <p className="text-sm text-muted">
-        <time dateTime={performance.startsAt}>{formatTime(performance.startsAt)}</time>
-        {' – '}
-        <time dateTime={performance.endsAt}>{formatTime(performance.endsAt)}</time>
-      </p>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-sm text-muted">
+          <time dateTime={performance.startsAt}>{formatTime(performance.startsAt)}</time>
+          {' – '}
+          <time dateTime={performance.endsAt}>{formatTime(performance.endsAt)}</time>
+        </p>
+        <PlayPreviewButton id={performance.id} previewUrl={previewUrl} />
+      </div>
     </article>
   );
 };

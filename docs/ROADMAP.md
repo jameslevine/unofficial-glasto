@@ -89,12 +89,39 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md) for the full list.
 - [x] Mobile PKCE via `expo-auth-session` + tokens in `expo-secure-store` + sync-on-sign-in
 - [x] Cross-device favourites verified end-to-end (Browser A → server → Browser B fresh state)
 
-### Phase 7 — Polish + 2026 Readiness 🔴 Not Started
+### Phase 7 — Polish + 2026 Readiness ♻ Folded into Phase 8/9/10 Definition of Done
 
-- [ ] WCAG 2.1 AA pass
-- [ ] Performance budgets (LCP < 2s, INP < 200ms)
-- [ ] i18n scaffolding (en, future-ready for more languages)
-- [ ] Scheduled scraper validated against the 2026 lineup announcement
+WCAG 2.1 AA, perf budgets, and i18n scaffolding are now per-PR gates baked into every Phase 8/9/10 feature rather than a standalone retrofit phase. Scheduled scraper validation against the 2026 lineup remains a one-off task triggered when the lineup drops.
+
+### Phase 8 — Planning Tool 🟡 In Progress (M8.3)
+
+- [x] M8.1 — `ArtistSummary` shared type + `pickPreviewTrack`/`topGenres` utils + `useArtistSummary` hook
+- [x] M8.1 — Backend `GET /v1/artists/summary?year=YYYY` (BatchGet artists, server-picked previewUrl)
+- [x] M8.1 — Genre chip rows on web (URL-syncable `?g=`) + mobile lineup screen
+- [x] M8.2 — `buildSchedule` + `detectConflicts` shared utils with unit tests
+- [x] M8.2 — Web `/favourites` swap to `ScheduleTimeline` with conflict styling
+- [x] M8.2 — Mobile `favourites.tsx` swap to schedule view + store v3 migration
+- [x] M8.3 — Web + mobile `useAudioPreview` zustand singletons (HTMLAudioElement / expo-av)
+- [x] M8.3 — `PlayPreviewButton` wired into lineup cards, schedule rows, and artist pages
+- [ ] M8.4 — `.ics` calendar export (RFC 5545 + Europe/London VTIMEZONE)
+
+### Phase 9 — On-Site Usefulness 🔴 Not Started
+
+- [ ] Push notifications ("favourite starts in 15 min")
+- [ ] Now/next pinning above the schedule when festival is live
+- [ ] Full POI map layer (toilets, food, water taps, first aid)
+- [ ] GPS routing to next favourite
+- [ ] Battery saver mode
+- [ ] "My pin" for tent / meet-up
+
+### Phase 10 — Social + Discovery 🔴 Not Started
+
+- [ ] Share schedule via short link
+- [ ] Group overlap (paste friend's link, diff against yours)
+- [ ] Recommendations ("users who favourited X also favourited Y")
+- [ ] Lineup change feed with diffing in scraper
+- [ ] Apple Music / YouTube / Tidal links on artist page
+- [ ] setlist.fm preview on artist page
 
 ## Future / Stretch
 
