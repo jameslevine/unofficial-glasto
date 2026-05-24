@@ -13,6 +13,7 @@ export interface PinRecord {
 
 interface PinsState {
   records: Record<string, PinRecord>;
+  dirty: Record<string, true>;
   upsert: (input: {
     id?: string;
     label: string;
@@ -22,6 +23,7 @@ interface PinsState {
   }) => string;
   remove: (id: string) => void;
   applyServer: (rows: PinRecord[]) => void;
+  markSynced: (ids: string[]) => void;
   pendingForSync: () => PinRecord[];
   active: () => PinRecord[];
   clear: () => void;
@@ -33,6 +35,7 @@ export const usePins = create<PinsState>()(
   persist(
     (set, get) => ({
       records: {},
+      dirty: {},
       upsert: ({ id, label, emoji, lat, lon }) => {
         const now = new Date().toISOString();
         const pinId = id ?? newId();
@@ -49,6 +52,7 @@ export const usePins = create<PinsState>()(
               deleted: false,
             },
           },
+          dirty: { ...state.dirty, [pinId]: true },
         }));
         return pinId;
       },
@@ -61,6 +65,7 @@ export const usePins = create<PinsState>()(
               ...state.records,
               [id]: { ...existing, deleted: true, updatedAt: new Date().toISOString() },
             },
+            dirty: { ...state.dirty, [id]: true },
           };
         }),
       applyServer: (rows) =>
@@ -74,14 +79,37 @@ export const usePins = create<PinsState>()(
           }
           return { records };
         }),
-      pendingForSync: () => Object.values(get().records),
+      markSynced: (ids) =>
+        set((state) => {
+          if (ids.length === 0) return state;
+          const dirty = { ...state.dirty };
+          for (const id of ids) delete dirty[id];
+          return { dirty };
+        }),
+      pendingForSync: () => {
+        const { records, dirty } = get();
+        return Object.keys(dirty)
+          .map((id) => records[id])
+          .filter((r): r is PinRecord => Boolean(r));
+      },
       active: () => Object.values(get().records).filter((r) => !r.deleted),
-      clear: () => set({ records: {} }),
+      clear: () => set({ records: {}, dirty: {} }),
     }),
     {
       name: 'glasto-pins',
       storage: createJSONStorage(() => localStorage),
-      version: 1,
+      version: 2,
+      migrate: (persisted: unknown, version) => {
+        if (version < 2 && persisted && typeof persisted === 'object') {
+          const state = persisted as { records?: Record<string, PinRecord> };
+          const records = state.records ?? {};
+          return {
+            records,
+            dirty: Object.fromEntries(Object.keys(records).map((id) => [id, true])),
+          };
+        }
+        return persisted as PinsState;
+      },
     },
   ),
 );
