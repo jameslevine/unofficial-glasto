@@ -6,7 +6,7 @@
 flowchart TB
   subgraph Clients
     Web["apps/web<br/>Vite + React<br/>Mapbox GL JS<br/>IndexedDB cache"]
-    Mobile["apps/mobile<br/>Expo + RN<br/>@rnmapbox/maps<br/>SQLite cache"]
+    Mobile["apps/mobile<br/>Expo + RN<br/>@rnmapbox/maps<br/>AsyncStorage cache"]
   end
 
   subgraph AWS
@@ -89,6 +89,9 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md).
 
 - `backend/src/routes/lineup.ts` reads `Performance` items via `adapters/dynamodb-lineup.ts`, with `controllers/lineup.ts` handling response shaping and ETag.
 - `backend/src/routes/favourites.ts` (Cognito-auth) writes via `adapters/dynamodb-favourites.ts`.
+- `backend/src/routes/pins.ts` (Cognito-auth) writes via `adapters/dynamodb-pins.ts` — `USER#sub / PIN#id` LWW on `updatedAt`, max 200 pins/sync.
+- `backend/src/routes/poi.ts` reads `POI#YEAR / id` items via `adapters/dynamodb-poi.ts` — 24h cache header.
+- `backend/src/routes/artists.ts` lazy-resolves on cache miss via `lib/spotify-client.ts`; `/artists/summary?year=YYYY` projects `{ slug, genres, previewUrl }` for the lineup page filter chips + audio preview.
 - `scraper/handler.ts` calls `scraper/src/parse.ts` (Cheerio) → `scraper/src/spotify-resolve.ts` (uses backend `lib/spotify-client.ts`) → `adapters/dynamodb-lineup.ts` for upsert.
 
 ## External Dependencies
@@ -101,6 +104,9 @@ See [`TOOLS_AND_TECH.md`](TOOLS_AND_TECH.md).
 
 ## Recent Significant Changes
 
-| Date       | Change                                  |
-| ---------- | --------------------------------------- |
-| 2026-05-21 | Project bootstrap, Phase 0 in progress. |
+| Date       | Change                                                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| 2026-05-21 | Phases 0–2 complete: monorepo, scraper + DDB seed, web MVP deployed to S3+CloudFront.                                       |
+| 2026-05-22 | Phases 3–6 complete: mobile MVP, artist pages, Mapbox map + walking times, Cognito sync.                                    |
+| 2026-05-23 | Phase 8 complete (planner: schedule view, conflicts, audio preview, .ics export). Phase 9 — POI layer + now/next + my-pins. |
+| 2026-05-24 | Pins sync moved to dirty-id real-time push (debounced subscribe-and-flush). Same pattern earmarked for favourites next.     |

@@ -16,21 +16,25 @@
 - **Formik + Yup** — forms (sign-in, sign-up).
 - **react-i18next** — i18n.
 - **Mapbox GL JS** — interactive map.
-- **Vite PWA plugin** (`vite-plugin-pwa`) — Service Worker, offline app shell, Mapbox tile cache.
+- **Vite PWA plugin** (`vite-plugin-pwa`) — Service Worker, offline app shell, Mapbox tile cache (4MB precache limit so the lazy Mapbox chunk fits, see [ADR-008](DECISIONS.md)).
+- **Mapbox GL JS** loaded via `React.lazy()` so it's only fetched when the user opens `/map`.
 - **Vitest + React Testing Library** — unit/integration tests.
-- **Cypress** — E2E (deferred to phase 7).
+- **Cypress** — E2E (deferred).
+- **Playwright MCP** — used during dev for browser-driven smoke tests against the deployed CloudFront site.
 
 ## Mobile (`apps/mobile`)
 
-- **Expo SDK 50+** with TypeScript.
+- **Expo SDK 51** with TypeScript.
 - **Expo Router** — file-based routing.
 - **React Native Paper** — UI components.
-- **TanStack Query** persisted via `expo-sqlite`.
-- **Zustand**, **Formik + Yup**, **react-i18next** (matches web).
-- **`@rnmapbox/maps`** — native Mapbox with `OfflineManager` for offline packs.
+- **TanStack Query** persisted via `@react-native-async-storage/async-storage` (see [ADR-007](DECISIONS.md)).
+- **Zustand** — favourites, pins, audio singleton stores.
+- **`@rnmapbox/maps@10.1.38`** — native Mapbox with `OfflineManager` for offline packs (pinned for RN 0.74, see [ADR-009](DECISIONS.md)).
 - **Expo SecureStore** — Cognito refresh tokens.
-- **`expo-auth-session`** — Cognito Hosted UI.
-- **Jest + React Native Testing Library** — unit/integration.
+- **`expo-auth-session`** — Cognito Hosted UI (PKCE).
+- **`expo-av`** — 30-second Spotify preview playback.
+- **`expo-file-system` + `expo-sharing`** — `.ics` calendar export via the share sheet.
+- **Vitest** — unit tests (shared with the rest of the monorepo).
 - **Maestro** — E2E (deferred).
 
 ## Shared (`packages/shared`)

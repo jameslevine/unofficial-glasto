@@ -72,6 +72,18 @@
 - **Alternatives considered:** Patching the package's `lib/module/index.js` via `patch-package` (rejected — extra moving part); upgrading Expo SDK 51 → 52 to get RN 0.79 (rejected — out of scope).
 - **Consequences:** Locks the Mapbox SDK version until we next bump Expo. Functional parity is fine — `MapView`, `Camera`, `MarkerView`, and `OfflineManager` all exist in 10.1.x.
 
+## ADR-010: Dirty-id tracking for real-time pin sync
+
+- **Date:** 2026-05-24
+- **Status:** Accepted
+- **Context:** The first cut of `usePinsSync` (and `useFavouritesSync` before it) ran a single push on sign-in via a `useRef` guard, so changes made mid-session only reached DDB on the next reload or sign-in. Acceptable for occasional favourites taps, jarring for pins where the user expects "drop → it's saved". Sending the entire records map on every change is wasteful and risks fighting last-write-wins on unrelated rows.
+- **Decision:** Persist a `dirty: Record<string, true>` set alongside `records` in the pins zustand store. `upsert`/`remove` mark the affected id dirty. `usePinsSync` subscribes to the store, debounces 400ms, sends only the dirty rows to `POST /v1/me/pins/sync`, and calls `markSynced(ids)` on 200. Failed pushes leave the dirty flag in place so the next change retries the lot. Persist version bumped v1→v2 with a migration that marks every pre-existing record dirty (so existing offline state syncs on next sign-in).
+- **Alternatives considered:**
+  - **Server-Sent Events / WebSocket push:** real-time both directions, but requires API Gateway WebSocket, IAM rework, and a presence layer. Overkill for a single-user pin set.
+  - **Periodic polling on a timer:** simpler but wastes battery on mobile and still has a perceived lag.
+  - **Send the full record set every time:** simpler but trips LWW conditional writes when unrelated rows haven't changed and grows linearly with pin count.
+- **Consequences:** Sub-second sync after each change with O(changed) bytes on the wire. Pattern is reusable — `useFavouritesSync` should follow the same shape next. Slight extra storage cost for the dirty index (one bool per record). The 400ms debounce coalesces rapid edits (label typing in the form, then Save) into one request.
+
 ## ADR-007: AsyncStorage (not SQLite) for the mobile TanStack Query cache
 
 - **Date:** 2026-05-21
