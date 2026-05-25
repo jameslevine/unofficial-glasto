@@ -207,7 +207,9 @@ export default function MapScreen() {
         onLongPress={(feature) => {
           const coords = feature.geometry?.type === 'Point' ? feature.geometry.coordinates : null;
           if (!coords || coords.length < 2) return;
-          const [lon, lat] = coords;
+          const lon = coords[0];
+          const lat = coords[1];
+          if (typeof lon !== 'number' || typeof lat !== 'number') return;
           setPendingPin({ lat, lon, initialLabel: '', initialEmoji: '📍' });
         }}
       >
