@@ -1,5 +1,7 @@
 # Architecture Decision Records
 
+> **Note:** ADR-0011 onwards live in [`docs/adr/`](adr/) as separate files. This document remains the historical record for ADR-001 through ADR-010.
+
 ## ADR-001: Monorepo with separate `apps/web` and `apps/mobile`
 
 - **Date:** 2026-05-21

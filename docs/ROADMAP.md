@@ -107,34 +107,93 @@ WCAG 2.1 AA, perf budgets, and i18n scaffolding are now per-PR gates baked into 
 - [x] M8.4 — Web `ExportButton` (per-page) + per-row `AddToCalendarButton` (.ics + Google fallback)
 - [x] M8.4 — Mobile share-sheet via `expo-file-system` + `expo-sharing` (per-row + per-page)
 
-### Phase 9 — On-Site Usefulness 🟡 In Progress
+### Phase 9 — On-Site Usefulness 🟡 In Progress (closing out)
 
-- [ ] Push notifications ("favourite starts in 15 min")
 - [x] Now/next pinning above the schedule when festival is live
 - [x] Full POI map layer — 1,107 POIs across 33 categories from `Jonty/glastonbury-app-data` 2025 dataset (toilets, water, food, medical, info, ATM, accessibility, …)
-- [ ] GPS routing to next favourite — planning doc at [`docs/PLAN_9_4_ROUTING.md`](PLAN_9_4_ROUTING.md); needs map georeferencing + path tracing before build
-- [ ] Battery saver mode
 - [x] "My pin" for tent / meet-up — long-press on web/mobile map to drop, edit/delete callout, multi-pin Cognito sync via `/v1/me/pins` with real-time dirty-id push (no reload required)
+- [→] GPS routing — promoted to **Phase 11** with upgraded scope (festival-map-traced graph, raster overlay, 2026 OTA unlock).
+- [✗] Push notifications — **dropped from this version.** Re-evaluate post-festival.
+- [✗] Battery saver mode — **dropped as a feature.** Replaced by sensible defaults (no background polling, GPS rate-limit when battery <20%) folded into Phase 11.D.
 
-### Phase 10 — Social + Discovery 🔴 Not Started
+---
 
-- [ ] Share schedule via short link
-- [ ] Group overlap (paste friend's link, diff against yours)
-- [ ] Recommendations ("users who favourited X also favourited Y")
-- [ ] Lineup change feed with diffing in scraper
-- [ ] Apple Music / YouTube / Tidal links on artist page
-- [ ] setlist.fm preview on artist page
+## Reframe (2026-05-25)
 
-## Future / Stretch
+After Phase 9, the roadmap was reshaped:
 
-- Routed walking times (real paths, not great-circle)
-- Notifications: "your favourite starts in 15 min"
-- Friends/group features (share schedules)
-- Live updates during festival (artist cancellations, set changes)
-- Native widgets (iOS/Android home-screen schedule)
+- **Audience:** public App Store + Play Store release, mobile-only.
+- **Web:** parked. No further investment. Stays deployed as-is.
+- **Job-to-be-done:** plan-and-pivot pre-festival (existing surfaces, polished in-stream as issues are found), navigate-and-survive on-site (new work in Phases 10–13).
+- **Capacity not the constraint, scope is.** No hard freeze; build ordering favours starting external-dependency tracks (Phase 13) immediately and keeping the routing data-build (Phase 11.A/B cartography) parallel to the UI overhaul (Phase 10).
+- **Three ADRs underpin the on-site loop:** [ADR-0011](adr/0011-festival-map-raster-overlay.md) (festival raster overlay), [ADR-0012](adr/0012-routing-graph-from-festival-map.md) (path graph traced from festival map), [ADR-0013](adr/0013-2026-data-driven-unlocks-and-ota-raster.md) (2026 unlocks data-driven, raster ships via OTA).
+
+### Phase 10 — Mobile UI Overhaul 🔴 Not Started
+
+Visual refresh in the [appkart-hotel-booking](https://themes.pixelstrap.net/pwa/appkart/hotel-booking/index.html) direction. Pinterest-board approach: the theme is a reference, not a codebase. Lift visual language only; IA unchanged.
+
+- [ ] 10.1 — Token extraction: palette, typography stack, spacing scale, radii, shadows, icon set into `packages/shared` design tokens consumable by RN Paper + Tailwind.
+- [ ] 10.2 — Component refresh: cards, buttons, inputs, list rows, headers — RN Paper theming + custom components where Paper falls short.
+- [ ] 10.3 — Screen-by-screen restyle: lineup, schedule, favourites, artist, map, settings.
+- [ ] 10.4 — Hero-image slots specced with explicit _no-image fallback design_ baked in from day one. AI-generated imagery slots in later as a content drop and never blocks build.
+
+### Phase 11 — On-Site Loop 🔴 Not Started
+
+The festival-week navigation experience. Per [ADR-0011](adr/0011-festival-map-raster-overlay.md), [ADR-0012](adr/0012-routing-graph-from-festival-map.md), [ADR-0013](adr/0013-2026-data-driven-unlocks-and-ota-raster.md).
+
+- [ ] **11.A — Routing engine.** Hand-traced GeoJSON path graph (per festival year), client-side A\* router, polyline render. 2022–2025 buildable now from published festival maps; 2026 graph builds when the festival publishes their site map.
+- [ ] **11.B — Festival map raster overlay.** Festival's official PDF → tile pyramid → bundled as Mapbox raster source. Same georeferencing transform as the routing graph (single source of truth). Per-year, server-fetched.
+- [ ] **11.C — 2026 unlock infrastructure.** Two independent gates (`lineup-available-2026`, `map-available-2026`). App data-driven: lineup unlocks when API serves 2026; map+routing unlocks when raster + path graph are uploaded. Until then, 2026 shows an explicit "details pending" state. Year picker defaults to most-recent-with-data.
+- [ ] **11.D — On-site UX details.**
+  - "What's next?" sticky pinned header — visible on every screen during festival, shows next favourite + walk time + tap-to-route.
+  - 56pt+ hit-area pass on primary actions (route, favourite, pin).
+  - State restoration (screen + scroll + filters) verified across cold-launch.
+  - Haptic feedback on pin drop, favourite toggle, route lock.
+  - Sensible battery defaults: no background polling, GPS rate-limit when battery <20%.
+
+### Phase 12 — Offline Robustness 🔴 Not Started
+
+Audit-led, defensive. Run on a stable codebase (after Phases 10–11 settle).
+
+- [ ] **12.A — Cold-airplane-mode audit on a real iPhone.** Walk every flow with no signal. File issues for every breakage.
+- [ ] **12.B — Stale-data UX.** "Last synced X ago" affordances. Distinguish cached-with-content from no-content. Manual refresh actions.
+- [ ] **12.C — Map / tile-pack robustness.** Tile pack expiry, eviction, recovery. Festival raster fallback when OTA bundle unavailable. Confirm offline coverage at the right zoom levels (13–18 for site, lower zooms for context).
+- [ ] **12.D — Crash resilience.** Defensive cache reads, error boundaries on every screen, "something went wrong" fallbacks. Survive cache corruption, expired tokens, 404s on previously-cached entities.
+
+### Phase 13 — Public Release 🟡 Track running in parallel
+
+External-dependency-heavy; start now.
+
+- [x] Apple Developer + Google Play Developer accounts ready.
+- [ ] 13.1 — App icons + splash (both platforms, all sizes).
+- [ ] 13.2 — App Privacy answers (Apple) + Data Safety form (Google).
+- [ ] 13.3 — Marketing screenshots (6.7" + 6.5" required), description, keywords.
+- [ ] 13.4 — First TestFlight + Play Internal Track build, real-device QA loop.
+- [ ] 13.5 — Public store submission. Patch releases via OTA where possible, store updates where required.
+
+### Dropped from this version
+
+- Push notifications.
+- Battery saver as a feature (replaced by sensible defaults in 11.D).
+- Offline write outbox / conflict resolution.
+- Background-fetch when connectivity returns.
+- Web overhaul (web parked entirely).
+- Phase 10's previous social/discovery content (group overlap, recommendations, share schedule, etc.) — see _Post-festival v2 candidates_ below.
+
+### Post-festival v2 candidates (not committed)
+
+- AI-styled map alternative (replaces bundled festival raster if [ADR-0011](adr/0011-festival-map-raster-overlay.md) IP risk materialises).
+- Push notifications.
+- Web revival or formal deprecation.
+- Social: share schedule, group overlap, recommendations, lineup change feed, alt music platforms (Apple/YouTube/Tidal), setlist.fm.
+- GPS routing turn-by-turn instructions.
+- One-way path enforcement, re-routing on path closure.
+- Routed walking times replacing crow-flies in places not yet upgraded.
+- Native widgets (iOS/Android home-screen schedule).
 
 ## Considerations for Scalability
 
 - Single-table DynamoDB is cost-efficient up to massive scale; GSIs cover known access patterns.
 - Lambda + API Gateway scales horizontally; concerns are Spotify rate limits (180 req/min) — mitigated by caching at ingest.
 - Map costs grow with users (Mapbox tiered pricing); rate-limit map opens and consider switching to MapLibre + self-hosted tiles if usage explodes.
+- Festival-map raster bandwidth: per-year tile pyramid bundles are bounded (~tens of MB max), served once per device per year via OTA — not a hot path.

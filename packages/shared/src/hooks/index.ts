@@ -1,6 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import type { ApiClient } from '../api-client.js';
 
+export const CURRENT_FESTIVAL_YEAR = 2026;
+
+const yearStaleTime = (year: number, liveMs: number) =>
+  year < CURRENT_FESTIVAL_YEAR ? Infinity : liveMs;
+
 export const lineupQueryKey = (year: number) => ['lineup', year] as const;
 export const stagesQueryKey = () => ['stages'] as const;
 export const artistQueryKey = (slug: string) => ['artist', slug] as const;
@@ -11,7 +16,7 @@ export const useLineup = (api: ApiClient, year: number) =>
   useQuery({
     queryKey: lineupQueryKey(year),
     queryFn: () => api.getLineup(year),
-    staleTime: 1000 * 60 * 60,
+    staleTime: yearStaleTime(year, 1000 * 60 * 60),
   });
 
 export const useStages = (api: ApiClient) =>
@@ -33,12 +38,12 @@ export const useArtistSummary = (api: ApiClient, year: number) =>
   useQuery({
     queryKey: artistSummaryQueryKey(year),
     queryFn: () => api.getArtistSummary(year),
-    staleTime: 1000 * 60 * 60 * 24,
+    staleTime: yearStaleTime(year, 1000 * 60 * 60 * 24),
   });
 
 export const usePois = (api: ApiClient, year: number) =>
   useQuery({
     queryKey: poisQueryKey(year),
     queryFn: () => api.getPois(year),
-    staleTime: 1000 * 60 * 60 * 24,
+    staleTime: yearStaleTime(year, 1000 * 60 * 60 * 24),
   });

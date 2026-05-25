@@ -89,7 +89,9 @@
 1. Mirror the dirty-id real-time sync pattern in `useFavouritesSync` (still one-shot per sign-in)
 2. Smoke-test mobile auth + pin sync end-to-end on iOS sim (web side verified, mobile not yet)
 3. Smoke-test mobile offline tile pack: download → airplane mode → reload `/map`
-4. Approve / iterate on `docs/PLAN_9_4_ROUTING.md` (Mapbox map image rights, v1 path scope, devices)
-5. Phase 9.5 — battery-saver settings flag (`useSettings` zustand: disable map, raise staleTime to 24h, skip background sync)
-6. Phase 9.1 — push notifications (`expo-notifications`, `POST /v1/me/devices`, per-minute cron Lambda)
+4. Phase 10 — Mobile UI overhaul kickoff (token extraction from appkart-hotel-booking reference)
+5. Phase 11.A/B — start cartography track (georeference 2025 festival map, hand-trace main routes; see [ADR-0011](adr/0011-festival-map-raster-overlay.md), [ADR-0012](adr/0012-routing-graph-from-festival-map.md))
+6. Phase 13 — store-submission prep (icons, splashes, App Privacy / Data Safety forms, screenshots)
 7. Apply for Spotify Extended Quota Mode to restore `/top-tracks`
+
+> Push notifications, battery-saver mode, and the standalone routing plan doc are dropped — see [`ROADMAP.md`](ROADMAP.md) §"Dropped from this version".
